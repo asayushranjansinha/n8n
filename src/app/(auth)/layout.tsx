@@ -1,9 +1,10 @@
-import { requireUnAuth } from "@/lib/auth-utils";
-import React from "react";
+// import { requireUnAuth } from "@/lib/auth-utils";
 
-async function AuthLayout({ children }: { children: React.ReactNode }) {
-  await requireUnAuth();
-  return children;
+import { AuthLayoutComp } from "@/features/auth/components/AuthLayoutComp";
+
+async function Layout({ children }: { children: React.ReactNode }) {
+  // await requireUnAuth();
+  return <AuthLayoutComp>{children}</AuthLayoutComp>;
 }
 
-export default AuthLayout;
+export default Layout;

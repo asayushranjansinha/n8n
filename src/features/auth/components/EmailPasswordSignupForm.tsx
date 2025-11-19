@@ -113,7 +113,6 @@ export const EmailPasswordSignupForm: FC<Props> = ({ className, ...props }) => {
                   {...field}
                   placeholder="e.g. asayushranjansinha@gmail.com"
                   type="email"
-                  autoFocus
                 />
               </FormControl>
               <FormMessage />

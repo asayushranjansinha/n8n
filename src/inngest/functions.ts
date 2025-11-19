@@ -1,34 +1,54 @@
-import prisma from "@/lib/database";
+import { anthropic } from "@ai-sdk/anthropic";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { openai } from "@ai-sdk/openai";
+
+import { generateText } from "ai";
 import { inngest } from "./client";
 
-export const testPipeline = inngest.createFunction(
-  { id: "test-pipeline" },
-  { event: "test/pipeline" },
+const google = createGoogleGenerativeAI();
+
+export const execute = inngest.createFunction(
+  { id: "execute-ai" },
+  { event: "execute/ai" },
   async ({ step }) => {
-    await step.run("get-video", async () => {
-      await new Promise((res) => setTimeout(res, 5_000));
-      return "dummy-video";
-    });
 
-    await step.run("transcribe-video", async () => {
-      await new Promise((res) => setTimeout(res, 5_000));
-      return "dummy-transcript";
-    });
+    // Step 1: Ask Gemini
+    const geminiResponse = await step.ai.wrap(
+      "ask-gemini",
+      generateText,
+      {
+        system: "You are a helpful assistant",
+        prompt: "What is 2 + 2?",
+        model: google("gemini-2.5-flash"),
+      }
+    );
 
-    await step.run("send-to-ai", async () => {
-      await new Promise((res) => setTimeout(res, 5_000));
-      return "dummy-ai-response";
-    });
+    // Step 2: Ask OpenAI
+    const openAIResponse = await step.ai.wrap(
+      "ask-openai",
+      generateText,
+      {
+        system: "You are a helpful assistant",
+        prompt: "What is 2 + 2?",
+        model: openai("gpt-4"),
+      }
+    );
 
-    // Move the database operation inside a step
-    const workflow = await step.run("create-workflow", async () => {
-      return prisma.workflow.create({
-        data: {
-          name: "test pipeline workflow",
-        },
-      });
-    });
+    // Step 3: Ask Anthropic
+    const anthropicResponse = await step.ai.wrap(
+      "ask-anthropic",
+      generateText,
+      {
+        system: "You are a helpful assistant",
+        prompt: "What is 2 + 2?",
+        model: anthropic("claude-sonnet-4-5-20250929"),
+      }
+    );
 
-    return { success: true, workflowId: workflow.id };
+    return {
+      geminiResponse,
+      openAIResponse,
+      anthropicResponse,
+    };
   }
 );

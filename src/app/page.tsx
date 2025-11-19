@@ -1,9 +1,15 @@
-import React from 'react'
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { getQueryClient, trpc } from "@/trpc/server";
+import { ClientGreeting } from "./ClientGreeting";
 
-const MarketingPage = () => {
+export default async function Home() {
+  const queryClient = getQueryClient();
+  void queryClient.prefetchQuery(trpc.getUsers.queryOptions());
   return (
-    <div>MarketingPage</div>
-  )
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <div>...</div>
+      {/** ... */}
+      <ClientGreeting />
+    </HydrationBoundary>
+  );
 }
-
-export default MarketingPage

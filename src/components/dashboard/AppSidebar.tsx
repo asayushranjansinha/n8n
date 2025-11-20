@@ -26,6 +26,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useHasActiveSubscription } from "@/features/subscriptions/hooks/useSubscription";
 
 const menuItems = [
   {
@@ -49,56 +50,72 @@ const menuItems = [
     ],
   },
 ];
-
+type FooterItem = {
+    title: string;
+    icon: any;
+    onClick: () => void | Promise<void>;
+  };
+  
 export const AppSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const {hasActiveSubscription, isLoading} = useHasActiveSubscription()
 
   const footerItems = useMemo(() => {
-    return [
-      {
-        title: "Footer",
-        items: [
-          {
-            title: "Upgrade to Pro",
-            icon: StarIcon,
-            onClick: () => {},
-          },
-          {
-            title: "Billing portal",
-            icon: CreditCardIcon,
-            onClick: () => {},
-          },
-          {
-            title: "Logout",
-            icon: LogOutIcon,
-            onClick: async () => {
-              // Show toast
-              const toastId = toast.loading("Logging Out");
-              await authClient.signOut({
-                fetchOptions: {
-                  onRequest: () => {
-                    // Already handled by loading toast
-                  },
-                  onSuccess: () => {
-                    toast.success("Logged Out successfully!", {
-                      id: toastId, // replaces the loading toast
-                    });
-                    router.replace("/login");
-                  },
-                  onError: (ctx) => {
-                    toast.error(ctx.error.message || "Something went wrong", {
-                      id: toastId, // replaces the loading toast
-                    });
-                  },
-                },
+    const items: FooterItem[] = [];
+  
+    // Only add upgrade item when conditions match
+    if (!isLoading && !hasActiveSubscription) {
+      items.push({
+        title: "Upgrade to Pro",
+        icon: StarIcon,
+        onClick: async () => {
+          await authClient.checkout({
+            slug: process.env.NEXT_PUBLIC_POLAR_PRO,
+          });
+        },
+      });
+    }
+  
+    // Billing Portal
+    items.push({
+      title: "Billing portal",
+      icon: CreditCardIcon,
+      onClick: () => {},
+    });
+  
+    // Logout
+    items.push({
+      title: "Logout",
+      icon: LogOutIcon,
+      onClick: async () => {
+        const toastId = toast.loading("Logging Out");
+        await authClient.signOut({
+          fetchOptions: {
+            onSuccess: () => {
+              toast.success("Logged Out successfully!", { id: toastId });
+              router.replace("/login");
+            },
+            onError: (ctx) => {
+              toast.error(ctx.error.message || "Something went wrong", {
+                id: toastId,
               });
             },
           },
-        ],
+        });
+      },
+    });
+  
+    return [
+      {
+        title: "Footer",
+        items,
       },
     ];
-  }, []);
+  }, [isLoading, hasActiveSubscription]);
+  
+  
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b">

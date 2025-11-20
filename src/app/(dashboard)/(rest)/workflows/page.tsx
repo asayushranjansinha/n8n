@@ -1,9 +1,28 @@
-import React from 'react'
+import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
-const WorkflowPage = () => {
+import { HydrateClient } from "@/trpc/server";
+
+import {
+  WorkflowList,
+  WorkflowListContainer,
+} from "@/features/workflows/components/workflows";
+import { prefetchWorkflows } from "@/features/workflows/server/prefetch";
+
+const WorkflowsPage = async () => {
+  prefetchWorkflows();
+
   return (
-    <div>WorkflowPage</div>
-  )
-}
+    <WorkflowListContainer>
+      <HydrateClient>
+        <ErrorBoundary fallback={<div>Error</div>}>
+          <Suspense fallback={<div>Loading....</div>}>
+            <WorkflowList />
+          </Suspense>
+        </ErrorBoundary>
+      </HydrateClient>
+    </WorkflowListContainer>
+  );
+};
 
-export default WorkflowPage
+export default WorkflowsPage;

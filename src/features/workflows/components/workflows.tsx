@@ -1,10 +1,15 @@
 "use client";
+
+import { EntityContainer } from "@/components/entity/EntityContainer";
+import { EntityHeader } from "@/components/entity/EntityHeader";
+import { EntityPagination } from "@/components/entity/EntityPagination";
+import { EntitySearch } from "@/components/entity/EntitySearch";
+import { useEntitySearch } from "@/hooks/useEntitySearch";
+import { useUpgradeModal } from "@/hooks/useUpgradeModal";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { useCreateWorkflow, useSuspenseWorkflows } from "../hooks/useWorkflows";
-import { EntityHeader } from "@/components/entity/EntityHeader";
-import { EntityContainer } from "@/components/entity/EntityContainer";
-import { useRouter } from "next/navigation";
-import { useUpgradeModal } from "@/hooks/useUpgradeModal";
+import { useWorkflowSearchParams } from "../hooks/useWorkflowSearchParams";
 
 export const WorkflowList = () => {
   const { data, isLoading, error, isError } = useSuspenseWorkflows();
@@ -55,10 +60,38 @@ export const WorkflowListContainer = ({
   return (
     <EntityContainer
       header={<WorkflowListHeader />}
-      search={<div>Search</div>}
-      pagination={<div>Pagination</div>}
+      search={<WorkflowSearch />}
+      pagination={<WorkflowPagination />}
     >
       {children}
     </EntityContainer>
+  );
+};
+
+const WorkflowSearch = () => {
+  const [params, setParams] = useWorkflowSearchParams();
+  const { searchValue, onSearchChange } = useEntitySearch({
+    params,
+    setParams,
+  });
+  return (
+    <EntitySearch
+      value={searchValue}
+      onChange={onSearchChange}
+      placeholder="Search Workflows"
+    />
+  );
+};
+
+const WorkflowPagination = () => {
+  const workflows = useSuspenseWorkflows();
+  const [params, setParams] = useWorkflowSearchParams();
+  return (
+    <EntityPagination
+      disabled={workflows.isFetching}
+      totalPages={workflows.data.totalPages}
+      page={workflows.data.page}
+      onPageChange={(page) => setParams({ ...params, page })}
+    />
   );
 };

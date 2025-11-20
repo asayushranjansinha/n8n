@@ -12,12 +12,12 @@ import {
 import { authClient } from "@/lib/auth-client";
 
 
-interface UpgrageModalProps {
+interface UpgradeModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export const UpgradeModal = ({ open, onOpenChange }: UpgrageModalProps) => {
+export const UpgradeModal = ({ open, onOpenChange }: UpgradeModalProps) => {
 
   async function handleUpgrade() {
     await authClient.checkout({

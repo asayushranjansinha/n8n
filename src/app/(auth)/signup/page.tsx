@@ -44,7 +44,7 @@ function SignupPage() {
             href="/login"
             className="underline underline-offset-4 hover:text-primary"
           >
-            Sign Up
+            Sign In
           </Link>
         </div>
       </CardFooter>

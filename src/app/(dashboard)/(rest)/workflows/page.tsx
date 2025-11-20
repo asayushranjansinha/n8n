@@ -6,24 +6,25 @@ import { HydrateClient } from "@/trpc/server";
 import {
   WorkflowList,
   WorkflowListContainer,
+  WorkflowsError,
+  WorkflowsLoading,
 } from "@/features/workflows/components/workflows";
 import { prefetchWorkflows } from "@/features/workflows/server/prefetch";
 import { SearchParams } from "nuqs/server";
 import { workflowsParamsLoader } from "@/features/workflows/server/params-loader";
 
-
 type PageProps = {
-  searchParams: Promise<SearchParams>
-}
+  searchParams: Promise<SearchParams>;
+};
 const WorkflowsPage = async ({ searchParams }: PageProps) => {
-  const params = await workflowsParamsLoader(searchParams)
+  const params = await workflowsParamsLoader(searchParams);
   prefetchWorkflows(params);
 
   return (
     <WorkflowListContainer>
       <HydrateClient>
-        <ErrorBoundary fallback={<div>Error</div>}>
-          <Suspense fallback={<div>Loading....</div>}>
+        <ErrorBoundary fallback={<WorkflowsError />}>
+          <Suspense fallback={<WorkflowsLoading />}>
             <WorkflowList />
           </Suspense>
         </ErrorBoundary>

@@ -30,6 +30,7 @@ import {
   SignupFormValues,
   signupSchema,
 } from "../schema/signupSchema";
+import { useRouter } from "next/navigation";
 
 type Props = React.ComponentProps<"form"> & {
   className?: string;
@@ -38,6 +39,7 @@ type Props = React.ComponentProps<"form"> & {
 export const EmailPasswordSignupForm: FC<Props> = ({ className, ...props }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(signupSchema),
@@ -66,6 +68,7 @@ export const EmailPasswordSignupForm: FC<Props> = ({ className, ...props }) => {
           toast.success("Account created successfully!", {
             id: toastId, // replaces the loading toast
           });
+          router.replace("/");
         },
         onError: (ctx) => {
           toast.error(ctx.error.message || "Something went wrong", {
@@ -185,7 +188,9 @@ export const EmailPasswordSignupForm: FC<Props> = ({ className, ...props }) => {
             </FormItem>
           )}
         />
-        <Button disabled={form.formState.isSubmitting} type="submit">Create Account</Button>
+        <Button disabled={form.formState.isSubmitting} type="submit">
+          Create Account
+        </Button>
       </form>
     </Form>
   );

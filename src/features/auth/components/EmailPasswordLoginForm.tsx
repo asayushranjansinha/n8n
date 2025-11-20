@@ -31,6 +31,7 @@ import {
   LoginFormValues,
   loginSchema,
 } from "../schema/loginSchema";
+import { useRouter } from "next/navigation";
 
 type Props = React.ComponentProps<"form"> & {
   className?: string;
@@ -38,13 +39,15 @@ type Props = React.ComponentProps<"form"> & {
 
 export const EmailPasswordLoginForm: FC<Props> = ({ className, ...props }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: defaultValues,
     mode: "onChange",
   });
 
-  const onLoginSubmit = async (values: LoginFormValues) => {
+  const onFormSubmit = async (values: LoginFormValues) => {
     const { email, password } = values;
 
     // Show loading toast
@@ -54,7 +57,8 @@ export const EmailPasswordLoginForm: FC<Props> = ({ className, ...props }) => {
       {
         email,
         password,
-        callbackURL: process.env.LOGIN_CALLBACK_URL,
+        // callbackURL: process.env.LOGIN_CALLBACK_URL,
+        rememberMe: true,
       },
       {
         onRequest: () => {
@@ -64,6 +68,7 @@ export const EmailPasswordLoginForm: FC<Props> = ({ className, ...props }) => {
           toast.success("Logged in successfully!", {
             id: toastId, // replace loading toast
           });
+          router.replace("/");
         },
         onError: (ctx) => {
           toast.error(ctx.error.message || "Invalid credentials", {
@@ -76,7 +81,11 @@ export const EmailPasswordLoginForm: FC<Props> = ({ className, ...props }) => {
 
   return (
     <Form {...form}>
-      <form className={cn("flex flex-col gap-6", className)} {...props}>
+      <form
+        className={cn("flex flex-col gap-6", className)}
+        onSubmit={form.handleSubmit(onFormSubmit)}
+        {...props}
+      >
         {/* Email Field */}
         <FormField
           control={form.control}

@@ -8,9 +8,16 @@ import {
   WorkflowListContainer,
 } from "@/features/workflows/components/workflows";
 import { prefetchWorkflows } from "@/features/workflows/server/prefetch";
+import { SearchParams } from "nuqs/server";
+import { workflowsParamsLoader } from "@/features/workflows/server/params-loader";
 
-const WorkflowsPage = async () => {
-  prefetchWorkflows();
+
+type PageProps = {
+  searchParams: Promise<SearchParams>
+}
+const WorkflowsPage = async ({ searchParams }: PageProps) => {
+  const params = await workflowsParamsLoader(searchParams)
+  prefetchWorkflows(params);
 
   return (
     <WorkflowListContainer>

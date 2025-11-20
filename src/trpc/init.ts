@@ -42,6 +42,7 @@ export const subscriptionRequiredProcedure = protectedProcedure.use(
       externalId: ctx.auth.user.id,
     });
 
+
     if (
       !customer.activeSubscriptions ||
       customer.activeSubscriptions.length === 0

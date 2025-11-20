@@ -71,7 +71,7 @@ export const AppSidebar = () => {
         icon: StarIcon,
         onClick: async () => {
           await authClient.checkout({
-            slug: process.env.NEXT_PUBLIC_POLAR_PRO,
+            slug: "pro",
           });
         },
       });

@@ -29,7 +29,7 @@ export const auth = betterAuth({
           products: [
             {
               productId: process.env.POLAR_PRODUCT_ID as string,
-              slug: process.env.NEXT_PUBLIC_POLAR_PRO as string,
+              slug: "pro",
             },
           ],
           successUrl: process.env.POLAR_SUCCESS_URL,

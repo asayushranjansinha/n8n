@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const CredentialsPage = () => {
-  return (
-    <div>CredentialsPage</div>
-  )
-}
+  return <div>CredentialsPage</div>;
+};
 
-export default CredentialsPage
+export default CredentialsPage;

@@ -1,5 +1,5 @@
+import type React from "react";
 import { AppHeader } from "@/components/dashboard/AppHeader";
-import React from "react";
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (

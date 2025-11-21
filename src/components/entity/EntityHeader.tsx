@@ -1,6 +1,6 @@
-import React, { FC } from "react";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
+import React, { type FC } from "react";
 
 import { Button } from "@/components/ui/button";
 

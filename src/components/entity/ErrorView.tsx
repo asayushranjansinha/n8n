@@ -5,9 +5,7 @@ interface ErrorViewProps {
   message?: string;
 }
 
-export const ErrorView = ({
-  message,
-}: ErrorViewProps) => {
+export const ErrorView = ({ message }: ErrorViewProps) => {
   return (
     <div className="flex-1 flex justify-center items-center flex-col gap-y-4">
       <Loader2Icon className="size-6 animate-spin text-muted-foreground" />

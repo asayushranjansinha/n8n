@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const ExecutionsPage = () => {
-  return (
-    <div>ExecutionsPage</div>
-  )
-}
+  return <div>ExecutionsPage</div>;
+};
 
-export default ExecutionsPage
+export default ExecutionsPage;

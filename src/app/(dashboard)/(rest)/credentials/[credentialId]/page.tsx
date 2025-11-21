@@ -7,7 +7,7 @@ type PageProps = {
 const CredentialIdPage = async ({ params }: PageProps) => {
   const { credentialId } = await params;
 
-  return<div>credentialId : {credentialId}</div>;
+  return <div>credentialId : {credentialId}</div>;
 };
 
 export default CredentialIdPage;

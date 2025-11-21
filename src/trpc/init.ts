@@ -1,9 +1,9 @@
-import { headers as NextHeaders } from "next/headers";
-import { auth } from "@/lib/auth";
 import { initTRPC, TRPCError } from "@trpc/server";
+import { headers as NextHeaders } from "next/headers";
 import { cache } from "react";
+import superjson from "superjson";
+import { auth } from "@/lib/auth";
 import { polarClient } from "@/lib/polar-client";
-import superjson from 'superjson'
 
 export const createTRPCContext = cache(async () => {
   /**
@@ -44,7 +44,6 @@ export const subscriptionRequiredProcedure = protectedProcedure.use(
       externalId: ctx.auth.user.id,
     });
 
-
     if (
       !customer.activeSubscriptions ||
       customer.activeSubscriptions.length === 0
@@ -55,5 +54,5 @@ export const subscriptionRequiredProcedure = protectedProcedure.use(
       });
     }
     return next({ ctx: { ...ctx, customer } });
-  }
+  },
 );

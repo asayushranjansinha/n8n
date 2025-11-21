@@ -1,10 +1,8 @@
 "use client";
-import type { Workflow } from "@/generated/prisma/client";
 import { formatDistanceToNow } from "date-fns";
 import { WorkflowIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React from "react";
-
+import type React from "react";
 import { EmptyEntity } from "@/components/entity/EmptyEntity";
 import { EntityContainer } from "@/components/entity/EntityContainer";
 import { EntityHeader } from "@/components/entity/EntityHeader";
@@ -14,15 +12,15 @@ import { EntityPagination } from "@/components/entity/EntityPagination";
 import { EntitySearch } from "@/components/entity/EntitySearch";
 import { ErrorView } from "@/components/entity/ErrorView";
 import { LoadingView } from "@/components/entity/LoadingView";
+import type { Workflow } from "@/generated/prisma/client";
 import { useEntitySearch } from "@/hooks/useEntitySearch";
 import { useUpgradeModal } from "@/hooks/useUpgradeModal";
-
+import { useWorkflowSearchParams } from "../hooks/useWorkflowSearchParams";
 import {
   useCreateWorkflow,
   useRemoveWorkflow,
   useSuspenseWorkflows,
 } from "../hooks/useWorkflows";
-import { useWorkflowSearchParams } from "../hooks/useWorkflowSearchParams";
 
 export const WorkflowList = () => {
   const { data } = useSuspenseWorkflows();

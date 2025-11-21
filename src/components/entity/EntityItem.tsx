@@ -1,22 +1,20 @@
-
 import { MoreVerticalIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import type React from "react";
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
 } from "@/components/ui/card";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-
 
 interface EntityItemProps {
   href: string;
@@ -54,7 +52,7 @@ export const EntityItem = ({
         className={cn(
           "p-4 shadow-none hover:shadow cursor-pointer",
           isRemoving && "opacity-50 cursor-not-allowed",
-          className
+          className,
         )}
       >
         <CardContent className="flex flex-row items-center justify-between p-0">

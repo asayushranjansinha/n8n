@@ -1,6 +1,5 @@
 "use client";
 
-import { authClient } from "@/lib/auth-client";
 import {
   CreditCardIcon,
   FolderOpenIcon,
@@ -14,7 +13,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { toast } from "sonner";
-
 import {
   Sidebar,
   SidebarContent,
@@ -27,6 +25,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useHasActiveSubscription } from "@/features/subscriptions/hooks/useSubscription";
+import { authClient } from "@/lib/auth-client";
 
 const menuItems = [
   {
@@ -51,19 +50,19 @@ const menuItems = [
   },
 ];
 type FooterItem = {
-    title: string;
-    icon: any;
-    onClick: () => void | Promise<void>;
-  };
-  
+  title: string;
+  icon: any;
+  onClick: () => void | Promise<void>;
+};
+
 export const AppSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const {hasActiveSubscription, isLoading} = useHasActiveSubscription()
+  const { hasActiveSubscription, isLoading } = useHasActiveSubscription();
 
   const footerItems = useMemo(() => {
     const items: FooterItem[] = [];
-  
+
     // Only add upgrade item when conditions match
     if (!isLoading && !hasActiveSubscription) {
       items.push({
@@ -76,14 +75,14 @@ export const AppSidebar = () => {
         },
       });
     }
-  
+
     // Billing Portal
     items.push({
       title: "Billing portal",
       icon: CreditCardIcon,
       onClick: () => {},
     });
-  
+
     // Logout
     items.push({
       title: "Logout",
@@ -105,7 +104,7 @@ export const AppSidebar = () => {
         });
       },
     });
-  
+
     return [
       {
         title: "Footer",
@@ -113,8 +112,6 @@ export const AppSidebar = () => {
       },
     ];
   }, [isLoading, hasActiveSubscription]);
-  
-  
 
   return (
     <Sidebar collapsible="icon">

@@ -1,3 +1,5 @@
+import Link from "next/link";
+import React from "react";
 import {
   Card,
   CardContent,
@@ -8,8 +10,6 @@ import {
 } from "@/components/ui/card";
 import { EmailPasswordLoginForm } from "@/features/auth/components/EmailPasswordLoginForm";
 import { OAuthLoginOptions } from "@/features/auth/components/OAuthLoginOptions";
-import Link from "next/link";
-import React from "react";
 
 function LoginPage() {
   return (

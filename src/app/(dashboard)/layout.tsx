@@ -1,7 +1,7 @@
+import type React from "react";
 import { AppSidebar } from "@/components/dashboard/AppSidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { requireAuth } from "@/lib/auth-utils";
-import React from "react";
 
 export default async function Layout({
   children,

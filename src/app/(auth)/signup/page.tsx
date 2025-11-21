@@ -1,3 +1,6 @@
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 import {
   Card,
   CardContent,
@@ -8,9 +11,6 @@ import {
 } from "@/components/ui/card";
 import { EmailPasswordSignupForm } from "@/features/auth/components/EmailPasswordSignupForm";
 import { OAuthSignupOptions } from "@/features/auth/components/OAuthSignupOptions";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
 
 function SignupPage() {
   return (

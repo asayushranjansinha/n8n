@@ -1,7 +1,6 @@
+import type { SearchParams } from "nuqs/server";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-
-import { HydrateClient } from "@/trpc/server";
 
 import {
   WorkflowList,
@@ -9,9 +8,9 @@ import {
   WorkflowsError,
   WorkflowsLoading,
 } from "@/features/workflows/components/workflows";
-import { prefetchWorkflows } from "@/features/workflows/server/prefetch";
-import { SearchParams } from "nuqs/server";
 import { workflowsParamsLoader } from "@/features/workflows/server/params-loader";
+import { prefetchWorkflows } from "@/features/workflows/server/prefetch";
+import { HydrateClient } from "@/trpc/server";
 
 type PageProps = {
   searchParams: Promise<SearchParams>;

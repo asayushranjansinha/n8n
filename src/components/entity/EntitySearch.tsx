@@ -1,9 +1,9 @@
+import { SearchIcon } from "lucide-react";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { SearchIcon } from "lucide-react";
 
 interface EntitySearchProps {
   value: string;

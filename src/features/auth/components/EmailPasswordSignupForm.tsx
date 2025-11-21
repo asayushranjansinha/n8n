@@ -1,10 +1,11 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
-import React, { FC, useState } from "react";
+import { useRouter } from "next/navigation";
+import type React from "react";
+import { type FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -21,16 +22,13 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
-
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
-
 import {
   defaultValues,
-  SignupFormValues,
+  type SignupFormValues,
   signupSchema,
 } from "../schema/signupSchema";
-import { useRouter } from "next/navigation";
 
 type Props = React.ComponentProps<"form"> & {
   className?: string;
@@ -75,7 +73,7 @@ export const EmailPasswordSignupForm: FC<Props> = ({ className, ...props }) => {
             id: toastId, // replaces the loading toast
           });
         },
-      }
+      },
     );
   };
 

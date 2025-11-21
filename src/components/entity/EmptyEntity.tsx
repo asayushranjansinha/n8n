@@ -1,13 +1,13 @@
+import { PackageOpenIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-    Empty,
-    EmptyContent,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
 } from "@/components/ui/empty";
-import { PackageOpenIcon } from "lucide-react";
 
 interface EmptyEntityProps {
   title: string;

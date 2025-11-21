@@ -1,16 +1,15 @@
 "use client";
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { authClient } from "@/lib/auth-client";
-
 
 interface UpgradeModalProps {
   open: boolean;
@@ -18,13 +17,12 @@ interface UpgradeModalProps {
 }
 
 export const UpgradeModal = ({ open, onOpenChange }: UpgradeModalProps) => {
-
   async function handleUpgrade() {
     await authClient.checkout({
       slug: process.env.NEXT_PUBLIC_POLAR_PRO,
     });
   }
-  
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>

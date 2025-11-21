@@ -11,22 +11,17 @@ export const execute = inngest.createFunction(
   { id: "execute-ai" },
   { event: "execute/ai" },
   async ({ step }) => {
-
     // Step 1: Ask Gemini
-    const geminiResponse = await step.ai.wrap(
-      "ask-gemini",
-      generateText,
-      {
-        system: "You are a helpful assistant",
-        prompt: "What is 2 + 2?",
-        model: google("gemini-2.5-flash"),
-        experimental_telemetry: {
-          isEnabled: true,
-          recordInputs: true,
-          recordOutputs: true,
-        },
-      }
-    );
+    const geminiResponse = await step.ai.wrap("ask-gemini", generateText, {
+      system: "You are a helpful assistant",
+      prompt: "What is 2 + 2?",
+      model: google("gemini-2.5-flash"),
+      experimental_telemetry: {
+        isEnabled: true,
+        recordInputs: true,
+        recordOutputs: true,
+      },
+    });
 
     // Step 2: Ask OpenAI
     // const openAIResponse = await step.ai.wrap(
@@ -65,5 +60,5 @@ export const execute = inngest.createFunction(
       // openAIResponse,
       // anthropicResponse,
     };
-  }
+  },
 );

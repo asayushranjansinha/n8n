@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:18-alpine
     container_name: n8n
     environment:
       POSTGRES_USER: n8n

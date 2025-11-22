@@ -1,4 +1,6 @@
 import * as z from "zod";
+import type { Node, Edge } from "@xyflow/react";
+
 import { PAGINATION } from "@/config/constants";
 
 import prisma from "@/lib/database";
@@ -8,6 +10,7 @@ import {
   protectedProcedure,
   subscriptionRequiredProcedure,
 } from "@/trpc/init";
+import { NodeType } from "@/generated/prisma/enums";
 
 export const workflowsRouter = createTRPCRouter({
   create: subscriptionRequiredProcedure.mutation(({ ctx }) => {
@@ -17,6 +20,13 @@ export const workflowsRouter = createTRPCRouter({
       data: {
         name: randomName,
         userId: ctx.auth.user.id,
+        nodes: {
+          create: {
+            type: NodeType.INITIAL,
+            position: { x: 0, y: 0 },
+            name: NodeType.INITIAL,
+          },
+        },
       },
     });
   }),
@@ -25,7 +35,7 @@ export const workflowsRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-      }),
+      })
     )
     .mutation(({ ctx, input }) => {
       return prisma.workflow.delete({
@@ -41,7 +51,7 @@ export const workflowsRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         name: z.string().min(1, "Name is required"),
-      }),
+      })
     )
     .mutation(({ ctx, input }) => {
       return prisma.workflow.update({
@@ -51,10 +61,35 @@ export const workflowsRouter = createTRPCRouter({
     }),
   getOne: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .query(({ ctx, input }) => {
-      return prisma.workflow.findUniqueOrThrow({
+    .query(async ({ ctx, input }) => {
+      const workflow = await prisma.workflow.findUniqueOrThrow({
         where: { id: input.id, userId: ctx.auth.user.id },
+        include: { nodes: true, connections: true },
       });
+
+      // Transform server nodes into react flow type
+      const nodes: Node[] = workflow.nodes.map((node) => ({
+        id: node.id,
+        type: node.type,
+        data: (node.data as Record<string, unknown>) || {},
+        position: node.position as { x: number; y: number },
+      }));
+
+      // Transform connection to react-flow compatible edges
+      const edges: Edge[] = workflow.connections.map((connection) => ({
+        id: connection.id,
+        source: connection.fromNodeId,
+        target: connection.toNodeId,
+        sourceHandle: connection.fromOutput,
+        targetHandle: connection.toInput,
+      }));
+
+      return {
+        id: workflow.id,
+        name: workflow.name,
+        nodes,
+        edges,
+      };
     }),
   getMany: protectedProcedure
     .input(
@@ -66,7 +101,7 @@ export const workflowsRouter = createTRPCRouter({
           .max(PAGINATION.MAX_PAGE_SIZE)
           .default(PAGINATION.DEFAULT_PAGE_SIZE),
         search: z.string().default(""),
-      }),
+      })
     )
     .query(async ({ ctx, input }) => {
       const { page, pageSize, search } = input;

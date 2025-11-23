@@ -23,9 +23,13 @@ import { LoadingView } from "@/components/entity/LoadingView";
 import { ErrorView } from "@/components/entity/ErrorView";
 import { nodeComponents } from "@/config/node-components";
 import { AddNodeButton } from "@/components/react-flow/custom/AddNodeButton";
+import { useSetAtom } from "jotai";
+import { editorAtom } from "../store/atoms";
 
 export const Editor = ({ workflowId }: { workflowId: string }) => {
   const { data: workflow } = useSuspenseWorkflow(workflowId);
+
+  const setEditor = useSetAtom(editorAtom)
 
   const [nodes, setNodes] = useState<Node[]>(workflow.nodes);
   const [edges, setEdges] = useState<Edge[]>(workflow.edges);
@@ -59,6 +63,12 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
         proOptions={{
           hideAttribution: true,
         }}
+        onInit={setEditor}
+        snapGrid={[10,10]}
+        snapToGrid
+        panOnScroll
+        panOnDrag={false}
+        selectionOnDrag
       >
         <Background />
         <MiniMap />

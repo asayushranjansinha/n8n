@@ -15,3 +15,4 @@ export const EditorHeader = ({ workflowId }: { workflowId: string }) => {
     </header>
   );
 };
+ 

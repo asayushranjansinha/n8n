@@ -1,6 +1,5 @@
 "use client";
-
-import { memo, useState } from "react";
+import { memo, useState, useCallback } from "react";
 import { Node, NodeProps, useReactFlow } from "@xyflow/react";
 import { GlobeIcon } from "lucide-react";
 
@@ -13,46 +12,40 @@ type HttpRequestNodeData = {
   body?: string;
 };
 
-type HttpRequestNodeType = Node<HttpRequestNodeData>;
+type HttpRequestNode = Node<HttpRequestNodeData>;
 
 const HttpRequestNodeComponent = ({
+  id,
   data,
   ...props
-}: NodeProps<HttpRequestNodeType>) => {
+}: NodeProps<HttpRequestNode>) => {
   const [dialogOpen, setDialogOpen] = useState(false);
-
-  const description = data.endpoint
-    ? `${data.method || "GET"}:${data.endpoint}`
-    : "Not Configured";
-
   const { setNodes } = useReactFlow();
 
-  const status = "initial";
-  const handleOpenSettings = () => setDialogOpen(true);
+  const description = data.endpoint
+    ? `${data.method}:${data.endpoint}`
+    : "Not Configured";
 
-  const handleSubmit = (values: {
-    endpoint: string;
-    method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
-    body?: string;
-  }) => {
-    setNodes((nodes) => {
-      return nodes.map((node) => {
-        if (node.id === props.id) {
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              endpoint: values.endpoint,
-              method: values.method,
-              body: values.body,
-            },
-          };
-        }
-        return node;
-      });
-    });
+  const handleOpenSettings = useCallback(() => {
+    setDialogOpen(true);
+  }, []);
+
+ const handleSubmit = useCallback(
+  (values: HttpRequestNodeData) => {
+    // Log the old data and the new submitted values
+    console.log("Before update:", { old: data, incoming: values });
+
+    setNodes((nodes) =>
+      nodes.map((node) =>
+        node.id === id ? { ...node, data: { ...node.data, ...values } } : node
+      )
+    );
+
     setDialogOpen(false);
-  };
+  },
+  [id, setNodes, data]
+);
+
 
   return (
     <>
@@ -60,15 +53,20 @@ const HttpRequestNodeComponent = ({
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         onSubmit={handleSubmit}
-        defaultEndpoint={data.endpoint}
-        defaultMethod={data.method}
+        defaultValues={{
+          endpoint: data.endpoint ?? "",
+          method: data.method ?? "GET",
+          body: data.body ?? "",
+        }}
       />
+
       <BaseExecutionNode
+        id={id}
         icon={GlobeIcon}
-        data={data}
         name="HTTP Request"
         description={description}
-        status={status}
+        status="initial"
+        data={data}
         onSettings={handleOpenSettings}
         onDoubleClick={handleOpenSettings}
         {...props}

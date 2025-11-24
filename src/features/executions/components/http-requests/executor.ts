@@ -3,8 +3,8 @@ import { NonRetriableError } from "inngest";
 import ky, { type Options as KyOptions } from "ky";
 
 export type HttpRequestData = {
-  variableName?: string;
-  endpoint?: string;
+  variableName: string;
+  endpoint: string;
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   body?: string;
 };

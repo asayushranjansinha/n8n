@@ -7,8 +7,8 @@ import { HttpRequestDialog } from "./Dialog";
 import { BaseExecutionNode } from "@/features/executions/components/BaseExecutionNode";
 
 type HttpRequestNodeData = {
-  variableName?: string;
-  endpoint?: string;
+  variableName: string;
+  endpoint: string;
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   body?: string;
 };

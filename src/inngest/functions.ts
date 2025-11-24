@@ -1,64 +1,86 @@
-import { anthropic } from "@ai-sdk/anthropic";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { openai } from "@ai-sdk/openai";
+import { NonRetriableError } from "inngest";
 
-import { generateText } from "ai";
+import { HttpRequestData } from "@/features/executions/components/http-requests/executor";
+import {
+  AllowedNodeTypes,
+  getExecutor,
+} from "@/features/executions/lib/executor-registry";
+import prisma from "@/lib/database";
 import { inngest } from "./client";
+import { topologicalSort } from "./utils";
 
 const google = createGoogleGenerativeAI();
 
-export const execute = inngest.createFunction(
-  { id: "execute-ai" },
-  { event: "execute/ai" },
-  async ({ step }) => {
-    // Step 1: Ask Gemini
-    const geminiResponse = await step.ai.wrap("ask-gemini", generateText, {
-      system: "You are a helpful assistant",
-      prompt: "What is 2 + 2?",
-      model: google("gemini-2.5-flash"),
-      experimental_telemetry: {
-        isEnabled: true,
-        recordInputs: true,
-        recordOutputs: true,
-      },
+export const executeWorkflow = inngest.createFunction(
+  { id: "execute-workflow" },
+  { event: "execute/workflow" },
+  async ({ event, step }) => {
+    console.log("🚀 executeWorkflow triggered with event:", event);
+
+    const workflowId = event.data.workflowId;
+
+    if (!workflowId) {
+      throw new NonRetriableError("Missing WorkflowID");
+    }
+
+    const sortedNodes = await step.run("prepare-workflow", async () => {
+      const workflow = await prisma.workflow.findUniqueOrThrow({
+        where: { id: workflowId },
+        include: {
+          nodes: true,
+          connections: true,
+        },
+      });
+
+      console.log("📦 Loaded workflow:", {
+        id: workflowId,
+        nodeCount: workflow.nodes.length,
+        connectionCount: workflow.connections.length,
+        nodes: workflow.nodes,
+        connections: workflow.connections,
+      });
+
+      return topologicalSort(workflow.nodes, workflow.connections);
     });
 
-    // Step 2: Ask OpenAI
-    // const openAIResponse = await step.ai.wrap(
-    //   "ask-openai",
-    //   generateText,
-    //   {
-    //     system: "You are a helpful assistant",
-    //     prompt: "What is 2 + 2?",
-    //     model: openai("gpt-4"),
-    //     experimental_telemetry: {
-    //       isEnabled: true,
-    //       recordInputs: true,
-    //       recordOutputs: true,
-    //     },
-    //   }
-    // );
+    console.log(
+      "🔀 Sorted nodes:",
+      sortedNodes.map((n) => ({
+        id: n.id,
+        type: n.type,
+        data: n.data,
+      }))
+    );
+    // Initialize the context with initial data from the trigger
+    let context = event.data.initialData || {};
 
-    // Step 3: Ask Anthropic
-    // const anthropicResponse = await step.ai.wrap(
-    //   "ask-anthropic",
-    //   generateText,
-    //   {
-    //     system: "You are a helpful assistant",
-    //     prompt: "What is 2 + 2?",
-    //     model: anthropic("claude-sonnet-4-5-20250929"),
-    //     experimental_telemetry: {
-    //       isEnabled: true,
-    //       recordInputs: true,
-    //       recordOutputs: true,
-    //     },
-    //   }
-    // );
+    // Execute each node
+    for (const node of sortedNodes) {
+      console.log("▶️ Executing node:", {
+        id: node.id,
+        type: node.type,
+        data: node.data,
+        contextBefore: context,
+      });
 
-    return {
-      geminiResponse,
-      // openAIResponse,
-      // anthropicResponse,
-    };
-  },
+      const executor = getExecutor(node.type as AllowedNodeTypes);
+
+      if (!executor) {
+        // skip initial or unsupported nodes
+         console.log("⏭️ No executor found. Skipping:", node.id, node.type);
+        continue;
+      }
+
+      console.log("Data in ingest function: ", node.data);
+      context = await executor({
+        data: node.data as HttpRequestData,
+        nodeId: node.id,
+        context,
+        step,
+      });
+    }
+
+    return { workflowId, result: context };
+  }
 );

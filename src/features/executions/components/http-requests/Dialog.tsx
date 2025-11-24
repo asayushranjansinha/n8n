@@ -32,57 +32,54 @@ import { Textarea } from "@/components/ui/textarea";
 import { useEffect } from "react";
 
 const httpRequestFormSchema = z.object({
-  endpoint: z.url("Please enter a valid url"),
+  endpoint: z.string().url("Please enter a valid url"),
   method: z.enum(["GET", "POST", "PUT", "DELETE", "PATCH"]),
   body: z.string().optional(),
 });
 
-type HttpRequestFormSchema = z.infer<typeof httpRequestFormSchema>;
+type HttpRequestFormValues = z.infer<typeof httpRequestFormSchema>;
 
 interface HttpRequestDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (values: HttpRequestFormSchema) => void;
-  defaultEndpoint?: string;
-  defaultMethod?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
-  defaultBody?: string;
+  onSubmit: (values: HttpRequestFormValues) => void;
+  defaultValues?: Partial<HttpRequestFormValues>;
 }
 
 export const HttpRequestDialog = ({
   onSubmit,
-  defaultEndpoint,
-  defaultMethod = "GET",
-  defaultBody = "",
+  defaultValues = {},
   ...props
 }: HttpRequestDialogProps) => {
   const form = useForm({
     resolver: zodResolver(httpRequestFormSchema),
     defaultValues: {
-      endpoint: defaultEndpoint,
-      method: defaultMethod,
-      body: defaultBody,
+      method: (defaultValues.method as any) || "GET",
+      endpoint: defaultValues.endpoint || "",
+      body: defaultValues.body || "",
     },
   });
 
   const watchMethod = form.watch("method");
   const showBodyField = ["POST", "PUT", "PATCH"].includes(watchMethod);
 
-  const handleSubmit = (values: HttpRequestFormSchema) => {
+  const handleSubmit = (values: HttpRequestFormValues) => {
+    console.log("values before submitting: ", values)
     onSubmit(values);
     form.reset();
     props.onOpenChange(false);
   };
 
-  //   Reset form when dialog opens with default values
+  // Reset form when dialog opens - only depend on open state
   useEffect(() => {
     if (props.open) {
       form.reset({
-        endpoint: defaultEndpoint,
-        method: defaultMethod,
-        body: defaultBody,
+        method: (defaultValues.method as any) || "GET",
+        endpoint: defaultValues.endpoint || "",
+        body: defaultValues.body || "",
       });
     }
-  }, [defaultEndpoint, defaultMethod, defaultBody, props.open, form]);
+  }, [props.open]); // Only depend on open, not defaultValues
 
   return (
     <Dialog {...props}>

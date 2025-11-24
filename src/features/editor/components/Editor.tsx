@@ -1,35 +1,39 @@
 "use client";
 
-import { useState, useCallback } from "react";
 import {
-  ReactFlow,
-  applyNodeChanges,
-  applyEdgeChanges,
-  addEdge,
-  type Node,
-  type Edge,
-  type NodeChange,
-  type EdgeChange,
-  type Connection,
   Background,
-  MiniMap,
   Controls,
+  MiniMap,
   Panel,
+  ReactFlow,
+  addEdge,
+  applyEdgeChanges,
+  applyNodeChanges,
+  type Connection,
+  type Edge,
+  type EdgeChange,
+  type Node,
+  type NodeChange,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-
-import { useSuspenseWorkflow } from "@/features/workflows/hooks/useWorkflows";
-import { LoadingView } from "@/components/entity/LoadingView";
-import { ErrorView } from "@/components/entity/ErrorView";
-import { nodeComponents } from "@/config/node-components";
-import { AddNodeButton } from "@/components/react-flow/custom/AddNodeButton";
 import { useSetAtom } from "jotai";
+import { useCallback, useMemo, useState } from "react";
+
+import { NodeType } from "@/generated/prisma/enums";
+
+import { ErrorView } from "@/components/entity/ErrorView";
+import { LoadingView } from "@/components/entity/LoadingView";
+import { nodeComponents } from "@/config/node-components";
+import { AddNodeButton } from "@/features/editor/components/AddNodeButton";
+import { useSuspenseWorkflow } from "@/features/workflows/hooks/useWorkflows";
+import { ExecuteWorkflowButton } from "./ExecuteWorkflowButton";
+
 import { editorAtom } from "../store/atoms";
 
 export const Editor = ({ workflowId }: { workflowId: string }) => {
   const { data: workflow } = useSuspenseWorkflow(workflowId);
 
-  const setEditor = useSetAtom(editorAtom)
+  const setEditor = useSetAtom(editorAtom);
 
   const [nodes, setNodes] = useState<Node[]>(workflow.nodes);
   const [edges, setEdges] = useState<Edge[]>(workflow.edges);
@@ -50,6 +54,10 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
     []
   );
 
+  const hasManualTrigger = useMemo(() => {
+    return nodes.some((node) => node.type === NodeType.MANUAL_TRIGGER);
+  }, [nodes]);
+
   return (
     <div className="h-full w-full">
       <ReactFlow
@@ -64,7 +72,7 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
           hideAttribution: true,
         }}
         onInit={setEditor}
-        snapGrid={[10,10]}
+        snapGrid={[10, 10]}
         snapToGrid
         panOnScroll
         panOnDrag={false}
@@ -76,6 +84,11 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
         <Panel position="top-right">
           <AddNodeButton />
         </Panel>
+        {hasManualTrigger && (
+          <Panel position="bottom-center">
+            <ExecuteWorkflowButton workflowId={workflowId} />
+          </Panel>
+        )}
       </ReactFlow>
     </div>
   );

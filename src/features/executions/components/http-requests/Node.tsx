@@ -7,6 +7,7 @@ import { HttpRequestDialog } from "./Dialog";
 import { BaseExecutionNode } from "@/features/executions/components/BaseExecutionNode";
 
 type HttpRequestNodeData = {
+  variableName?: string;
   endpoint?: string;
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   body?: string;
@@ -30,22 +31,21 @@ const HttpRequestNodeComponent = ({
     setDialogOpen(true);
   }, []);
 
- const handleSubmit = useCallback(
-  (values: HttpRequestNodeData) => {
-    // Log the old data and the new submitted values
-    console.log("Before update:", { old: data, incoming: values });
+  const handleSubmit = useCallback(
+    (values: HttpRequestNodeData) => {
+      // Log the old data and the new submitted values
+      console.log("Before update:", { old: data, incoming: values });
 
-    setNodes((nodes) =>
-      nodes.map((node) =>
-        node.id === id ? { ...node, data: { ...node.data, ...values } } : node
-      )
-    );
+      setNodes((nodes) =>
+        nodes.map((node) =>
+          node.id === id ? { ...node, data: { ...node.data, ...values } } : node
+        )
+      );
 
-    setDialogOpen(false);
-  },
-  [id, setNodes, data]
-);
-
+      setDialogOpen(false);
+    },
+    [id, setNodes, data]
+  );
 
   return (
     <>

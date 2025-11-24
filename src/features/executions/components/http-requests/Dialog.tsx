@@ -33,6 +33,12 @@ import { useEffect } from "react";
 
 // Zod schema
 const httpRequestFormSchema = z.object({
+  variableName: z
+    .string()
+    .regex(
+      /^[A-Za-z_$][A-Za-z0-9_$]*$/,
+      "Must start with a letter or _, and contain only letters, digits, _"
+    ),
   endpoint: z.url("Please enter a valid url"),
   method: z.enum(["GET", "POST", "PUT", "DELETE", "PATCH"]),
   body: z.string().optional(),
@@ -45,10 +51,14 @@ interface HttpRequestFormProps {
   onSubmit: (values: HttpRequestFormValues) => void;
 }
 
-const HttpRequestForm = ({ defaultValues = {}, onSubmit }: HttpRequestFormProps) => {
+const HttpRequestForm = ({
+  defaultValues = {},
+  onSubmit,
+}: HttpRequestFormProps) => {
   const form = useForm({
     resolver: zodResolver(httpRequestFormSchema),
     defaultValues: {
+      variableName: defaultValues.variableName || "",
       method: (defaultValues.method as any) || "GET",
       endpoint: defaultValues.endpoint || "",
       body: defaultValues.body || "",
@@ -56,6 +66,7 @@ const HttpRequestForm = ({ defaultValues = {}, onSubmit }: HttpRequestFormProps)
   });
 
   const watchMethod = form.watch("method");
+  const watchVariableName = form.watch("variableName") || "myVariableName";
   const showBodyField = ["POST", "PUT", "PATCH"].includes(watchMethod);
 
   const handleSubmit = (values: HttpRequestFormValues) => {
@@ -65,7 +76,31 @@ const HttpRequestForm = ({ defaultValues = {}, onSubmit }: HttpRequestFormProps)
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8 mt-4">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="space-y-8 mt-4"
+      >
+        {/* Variable Name */}
+        <FormField
+          control={form.control}
+          name="variableName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Variable Name</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="myVariableName" />
+              </FormControl>
+              <FormDescription>
+                Must start with a letter or _, and contain only letters, digits,
+                _. <br /> Use this name to reference the result in other nodes,
+                e.g. <code>{`{{${watchVariableName}.httpResponse.data}}`}</code>
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Endpoint */}
         <FormField
           control={form.control}
           name="endpoint"
@@ -79,14 +114,16 @@ const HttpRequestForm = ({ defaultValues = {}, onSubmit }: HttpRequestFormProps)
                 />
               </FormControl>
               <FormDescription>
-                Static URL or use {"{variables}"} for simple values or {"{json variable}"} to
-                stringify objects
+                Static URL or use {"{{variables}}"} for simple values or{" "}
+                {"{{json variable}}"} to stringify objects
               </FormDescription>
+
               <FormMessage />
             </FormItem>
           )}
         />
 
+        {/* Method */}
         <FormField
           control={form.control}
           name="method"
@@ -94,7 +131,10 @@ const HttpRequestForm = ({ defaultValues = {}, onSubmit }: HttpRequestFormProps)
             <FormItem>
               <FormLabel>HTTP Request Method</FormLabel>
               <FormControl>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select a method" />
                   </SelectTrigger>
@@ -107,12 +147,15 @@ const HttpRequestForm = ({ defaultValues = {}, onSubmit }: HttpRequestFormProps)
                   </SelectContent>
                 </Select>
               </FormControl>
-              <FormDescription>The HTTP method to use for the request.</FormDescription>
+              <FormDescription>
+                The HTTP method to use for the request.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
+        {/* Body */}
         {showBodyField && (
           <FormField
             control={form.control}
@@ -132,8 +175,8 @@ const HttpRequestForm = ({ defaultValues = {}, onSubmit }: HttpRequestFormProps)
                   />
                 </FormControl>
                 <FormDescription>
-                  Static body or use {"{variables}"} for simple values or {"{json variable}"} to
-                  stringify objects
+                  Static body or use {"{variables}"} for simple values or{" "}
+                  {"{json variable}"} to stringify objects
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -142,7 +185,11 @@ const HttpRequestForm = ({ defaultValues = {}, onSubmit }: HttpRequestFormProps)
         )}
 
         <DialogFooter className="mt-4">
-          <Button type="submit" disabled={form.formState.isSubmitting} className="w-full">
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting}
+            className="w-full"
+          >
             {form.formState.isSubmitting ? "Saving..." : "Save"}
           </Button>
         </DialogFooter>
@@ -170,7 +217,9 @@ export const HttpRequestDialog = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Http Request</DialogTitle>
-          <DialogDescription>Configure settings for Http Request Node</DialogDescription>
+          <DialogDescription>
+            Configure settings for Http Request Node
+          </DialogDescription>
         </DialogHeader>
         <HttpRequestForm
           defaultValues={defaultValues}

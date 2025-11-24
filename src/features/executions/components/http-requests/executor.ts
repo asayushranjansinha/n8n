@@ -3,6 +3,7 @@ import { NonRetriableError } from "inngest";
 import ky, { type Options as KyOptions } from "ky";
 
 export type HttpRequestData = {
+  variableName?: string;
   endpoint?: string;
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   body?: string;
@@ -17,9 +18,17 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
     throw new NonRetriableError("Http Request Node: No endpoint configured.");
   }
 
+  if (!data.variableName) {
+    throw new NonRetriableError(
+      "Http Request Node: No variable name configured."
+    );
+  }
+
   if (!data.method) {
     throw new NonRetriableError("Http Request Node: No method configured.");
   }
+
+  const variableName = data.variableName; // now TypeScript knows it's a string
 
   const updatedContext = await step.run("http-request", async () => {
     const options: KyOptions = { method: data.method };
@@ -38,13 +47,17 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
       ? await res.json().catch(() => res.text())
       : await res.text();
 
-    return {
-      ...context,
+    const responsePayload = {
       httpResponse: {
         status: res.status,
         statusText: res.statusText,
         data: responseData,
       },
+    };
+
+    return {
+      ...context,
+      [variableName]: responsePayload,
     };
   });
 

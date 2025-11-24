@@ -43,14 +43,36 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
 
   const updatedContext = await step.run("http-request", async () => {
     // Compile endpoint with context (allows templates like {{previousNode.data}})
-    const endpoint = Handlebars.compile(data.endpoint)(context);
+
+    let endpoint: string;
+
+    try {
+      const template = Handlebars.compile(data.endpoint);
+      endpoint = template(context);
+
+      if (!endpoint || typeof endpoint !== "string") {
+        throw new Error("Endpoint template must resolve to a non-empty string");
+      }
+    } catch (e: any) {
+      throw new NonRetriableError(
+        `HTTP Request node: Failed to resolve endpoint template: ${e.message}`
+      );
+    }
 
     const options: KyOptions = { method: data.method };
 
     if (["POST", "PUT", "PATCH"].includes(data.method)) {
       const resolved = Handlebars.compile(data.body || "{}")(context);
       // Validate JSON before sending
-      JSON.parse(resolved);
+      try {
+        JSON.parse(resolved);
+      } catch (error) {
+        throw new NonRetriableError(
+          `Http Request Node: Invalid JSON in request body. ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`
+        );
+      }
       options.body = resolved;
       options.headers = {
         "Content-Type": "application/json",

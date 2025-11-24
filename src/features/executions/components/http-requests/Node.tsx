@@ -57,6 +57,7 @@ const HttpRequestNodeComponent = ({
           endpoint: data.endpoint ?? "",
           method: data.method ?? "GET",
           body: data.body ?? "",
+          variableName: data.variableName ?? "",
         }}
       />
 

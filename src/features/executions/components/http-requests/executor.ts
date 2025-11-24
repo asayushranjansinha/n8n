@@ -35,10 +35,16 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
 
   const variableName = data.variableName;
 
+  if (context[variableName]) {
+    throw new NonRetriableError(
+      `Http Request Node: Variable name '${variableName}' already exists in context. Choose a different name.`
+    );
+  }
+
   const updatedContext = await step.run("http-request", async () => {
     // Compile endpoint with context (allows templates like {{previousNode.data}})
     const endpoint = Handlebars.compile(data.endpoint)(context);
-    
+
     const options: KyOptions = { method: data.method };
 
     if (["POST", "PUT", "PATCH"].includes(data.method)) {
@@ -53,7 +59,7 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
 
     // Use the compiled endpoint, not the raw one
     const res = await ky(endpoint, options);
-    
+
     const contentType = res.headers.get("content-type") ?? "";
     const responseData = contentType.includes("application/json")
       ? await res.json().catch(() => res.text())

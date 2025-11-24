@@ -33,10 +33,36 @@ import { Textarea } from "@/components/ui/textarea";
 const httpRequestFormSchema = z.object({
   variableName: z
     .string()
+    .min(1, "Variable name is required")
     .regex(
       /^[A-Za-z_$][A-Za-z0-9_$]*$/,
       "Must start with a letter or _, and contain only letters, digits, _"
-    ),
+    )
+    .refine((val) => {
+      const reserved = [
+        "return",
+        "function",
+        "class",
+        "const",
+        "let",
+        "var",
+        "if",
+        "else",
+        "for",
+        "while",
+        "do",
+        "switch",
+        "case",
+        "break",
+        "continue",
+        "default",
+        "throw",
+        "try",
+        "catch",
+        "finally",
+      ];
+      return !reserved.includes(val.toLowerCase());
+    }, "Cannot use JavaScript reserved words"),
   endpoint: z.url("Please enter a valid url"),
   method: z.enum(["GET", "POST", "PUT", "DELETE", "PATCH"]),
   body: z.string().optional(),

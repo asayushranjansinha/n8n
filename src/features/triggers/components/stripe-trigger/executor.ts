@@ -18,14 +18,18 @@ export const stripeTriggerExecutor: NodeExecutor<stripeTriggerData> = async ({
       })
     );
   };
+  try {
+    await publishStatus("loading");
 
-  await publishStatus("loading");
+    const updatedContext = await step.run("stripe-trigger", async () => {
+      return context;
+    });
 
-  const updatedContext = await step.run("stripe-trigger", async () => {
-    return context;
-  });
+    await publishStatus("success");
 
-  await publishStatus("success");
-
-  return updatedContext;
+    return updatedContext;
+  } catch (error) {
+    await publishStatus("error");
+    throw error;
+  }
 };

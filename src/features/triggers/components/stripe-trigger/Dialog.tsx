@@ -81,7 +81,8 @@ export const StripeTriggerDialog = (props: StripeTriggerDialogProps) => {
 
             <div className="space-y-1">
               <p className="text-xs">
-                <strong>Step 1:</strong> Go to your Stripe Dashboard → Developers → Webhooks.
+                <strong>Step 1:</strong> Go to your Stripe Dashboard →
+                Developers → Webhooks.
               </p>
               <p className="text-xs">
                 <strong>Step 2:</strong> Click <em>Add endpoint</em>.
@@ -90,7 +91,8 @@ export const StripeTriggerDialog = (props: StripeTriggerDialogProps) => {
                 <strong>Step 3:</strong> Paste the Webhook URL above.
               </p>
               <p className="text-xs">
-                <strong>Step 4:</strong> Select the events you want to send to your workflow.
+                <strong>Step 4:</strong> Select the events you want to send to
+                your workflow.
               </p>
               <p className="text-xs">
                 <strong>Step 5:</strong> Save the webhook.
@@ -102,27 +104,29 @@ export const StripeTriggerDialog = (props: StripeTriggerDialogProps) => {
           </div>
 
           {/* JSON Reference */}
-          <ul className="text-sm text-muted-foreground space-y-1 bg-muted rounded p-3">
-            <h3 className="font-medium text-foreground">Available Variables</h3>
-            <li>
-              <code className="bg-background px-1 py-0.5 rounded">
-                {"{{stripe.eventType}}"}
-              </code>{" "}
-              - Event type (e.g., `invoice.paid`)
-            </li>
-            <li>
-              <code className="bg-background px-1 py-0.5 rounded">
-                {"{{stripe.data}}"}
-              </code>{" "}
-              - Event payload data
-            </li>
-            <li>
-              <code className="bg-background px-1 py-0.5 rounded">
-                {"{{json stripe.data}}"}
-              </code>{" "}
-              - Full event JSON
-            </li>
-          </ul>
+          <div>
+            <h3 className="font-medium text-foreground mb-1">Available Variables</h3>
+            <ul className="text-sm text-muted-foreground space-y-1 bg-muted rounded p-3">
+              <li>
+                <code className="bg-background px-1 py-0.5 rounded">
+                  {"{{stripe.eventType}}"}
+                </code>{" "}
+                - Event type (e.g., `invoice.paid`)
+              </li>
+              <li>
+                <code className="bg-background px-1 py-0.5 rounded">
+                  {"{{stripe.data}}"}
+                </code>{" "}
+                - Event payload data
+              </li>
+              <li>
+                <code className="bg-background px-1 py-0.5 rounded">
+                  {"{{json stripe.data}}"}
+                </code>{" "}
+                - Full event JSON
+              </li>
+            </ul>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

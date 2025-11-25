@@ -1,5 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
+import Stripe from "stripe";
 import { sendWorkflowExecution } from "@/inngest/utils";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2025-11-17.clover",
+});
+
+// Required for signature verification
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,23 +31,39 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`[Stripe Webhook] workflowId: ${workflowId}`);
+    // Read raw body
+    const rawBody = await request.text();
+    const signature = request.headers.get("stripe-signature")!;
 
-    // Stripe POST body
-    const body = await request.json();
-    console.log("[Stripe Webhook] Raw event:", body);
+    let event;
+
+    try {
+      event = stripe.webhooks.constructEvent(
+        rawBody,
+        signature,
+        process.env.STRIPE_WEBHOOK_SECRET!
+      );
+    } catch (err: any) {
+      console.error(
+        "[Stripe Webhook] Signature verification failed:",
+        err.message
+      );
+      return NextResponse.json(
+        { success: false, error: "Invalid Stripe signature" },
+        { status: 400 }
+      );
+    }
+
+    console.log("[Stripe Webhook] Verified event:", event.type);
 
     const stripeEvent = {
-      eventId: body.id,
-      eventType: body.type,
-      timestamp: body.created,
-      livemode:body.livemode,
-      raw: body.data.object,
+      eventId: event.id,
+      eventType: event.type,
+      timestamp: event.created,
+      livemode: event.livemode,
+      raw: event.data.object,
     };
 
-    console.log("[Stripe Webhook] Prepared stripeEvent:", stripeEvent);
-
-    // Trigger Inngest workflow
     await sendWorkflowExecution({
       workflowId,
       initialData: {
@@ -45,15 +73,11 @@ export async function POST(request: NextRequest) {
 
     console.log("[Stripe Webhook] Workflow triggered successfully");
 
-    // Stripe requires 2xx response
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("[Stripe Webhook] Error:", error);
     return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to process Stripe event",
-      },
+      { success: false, error: "Failed to process Stripe event" },
       { status: 500 }
     );
   }

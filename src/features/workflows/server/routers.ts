@@ -1,8 +1,10 @@
+import type { Edge, Node } from "@xyflow/react";
 import * as z from "zod";
-import type { Node, Edge } from "@xyflow/react";
 
 import { PAGINATION } from "@/config/constants";
 
+import { NodeType } from "@/generated/prisma/enums";
+import { sendWorkflowExecution } from "@/inngest/utils";
 import prisma from "@/lib/database";
 import { generateWorkflowName } from "@/lib/random-name-util";
 import {
@@ -10,8 +12,6 @@ import {
   protectedProcedure,
   subscriptionRequiredProcedure,
 } from "@/trpc/init";
-import { NodeType } from "@/generated/prisma/enums";
-import { inngest } from "@/inngest/client";
 
 export const workflowsRouter = createTRPCRouter({
   execute: protectedProcedure
@@ -24,12 +24,18 @@ export const workflowsRouter = createTRPCRouter({
         },
       });
 
-      await inngest.send({
-        name: "execute/workflow",
-        data: {
-          workflowId: input.id,
-          initialData: {},
-        },
+      // await inngest.send({
+      //   name: "execute/workflow",
+      //   data: {
+      //     workflowId: input.id,
+      //     initialData: {},
+      //   },
+      // });
+
+      // Replaced direct use of inngest with this
+      await sendWorkflowExecution({
+        workflowId: input.id,
+        initialData: {},
       });
 
       return workflow;

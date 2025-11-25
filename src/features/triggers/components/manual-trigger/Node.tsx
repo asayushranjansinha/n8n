@@ -8,9 +8,8 @@ import { BaseTriggerNode } from "../BaseTriggerNode";
 import { ManualTriggerDialog } from "./Dialog";
 import { useNodeStatus } from "@/features/executions/hooks/useNodeStatus";
 import { MANUAL_TRIGGER_CHANNEL_NAME } from "@/inngest/channels/manual-trigger";
-import { fetchHttpRequestRealtimeToken } from "@/features/executions/actions/http-request/action";
+import { fetchManualTriggerRealtimeToken } from "@/features/triggers/actions/manual-trigger";
 
-// TODO: Add onSettings and onDoubleClick functions
 const ManualTriggerNodeComponent = ({ id, ...props }: NodeProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -18,7 +17,7 @@ const ManualTriggerNodeComponent = ({ id, ...props }: NodeProps) => {
     nodeId: id,
     channel: MANUAL_TRIGGER_CHANNEL_NAME,
     topic: "status",
-    refreshToken: fetchHttpRequestRealtimeToken,
+    refreshToken: fetchManualTriggerRealtimeToken,
   });
   const handleOpenSettings = () => setDialogOpen(true);
 
@@ -29,7 +28,8 @@ const ManualTriggerNodeComponent = ({ id, ...props }: NodeProps) => {
         {...props}
         id={id}
         icon={MousePointerIcon}
-        name="When clicking 'Execute Workflow'"
+        name="Manual Trigger"
+        description="When clicking 'Execute Workflow'"
         status={status}
         onSettings={handleOpenSettings}
         onDoubleClick={handleOpenSettings}

@@ -7,18 +7,23 @@ import {
   getExecutor,
 } from "@/features/executions/lib/executor-registry";
 import prisma from "@/lib/database";
-import { httpRequestChannel } from "./channels/http-request";
 import { inngest } from "./client";
 import { topologicalSort } from "./utils";
+import { httpRequestChannel } from "./channels/http-request";
 import { manualTriggerChannel } from "./channels/manual-trigger";
+import { googleFormTriggerChannel } from "./channels/google-form-trigger";
 
 const google = createGoogleGenerativeAI();
 
 export const executeWorkflow = inngest.createFunction(
   { id: "execute-workflow", retries: 0 }, //TODO: Remove on production
   {
-    event: "execute/workflow",
-    channels: [httpRequestChannel(), manualTriggerChannel()],
+    event: "workflows/execute.workflow",
+    channels: [
+      httpRequestChannel(),
+      manualTriggerChannel(),
+      googleFormTriggerChannel(),
+    ],
   },
   async ({ event, step, publish }) => {
     console.log("🚀 executeWorkflow triggered with event:", event);

@@ -21,13 +21,7 @@ export const manualTriggerExecutor: NodeExecutor<ManualTriggerData> = async ({
 
   await publishStatus("loading");
 
-  // Sleep helper
-  const sleep = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
-
-  // Delay inside step
   const updatedContext = await step.run("manual-trigger", async () => {
-    await sleep(10_000); // 10 seconds
     return context;
   });
 

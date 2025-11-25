@@ -63,7 +63,7 @@ const httpRequestFormSchema = z.object({
       ];
       return !reserved.includes(val.toLowerCase());
     }, "Cannot use JavaScript reserved words"),
-  endpoint: z.url("Please enter a valid url"),
+  endpoint: z.string("Please enter a valid url"),
   method: z.enum(["GET", "POST", "PUT", "DELETE", "PATCH"]),
   body: z.string().optional(),
 });

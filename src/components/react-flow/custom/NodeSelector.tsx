@@ -6,12 +6,12 @@ import React, { useCallback } from "react";
 import { toast } from "sonner";
 
 import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
@@ -30,6 +30,12 @@ const triggerNodes: NodeTypeOption[] = [
     label: "Manual Trigger",
     description: "Runs the flow when activated manually.",
     icon: MousePointerIcon,
+  },
+  {
+    type: NodeType.GOOGLE_FORM_TRIGGER,
+    label: "Google Form",
+    description: "Runs the flow when a google form is submitted.",
+    icon: '/googleform.svg',
   },
 ];
 

@@ -48,7 +48,7 @@ const BaseExecutionNodeComponent = (props: BaseExecutionNodeProps) => {
       onDelete={handleDelete}
     >
       <NodeStatusIndicator status={status} variant="border">
-        <BaseNode onDoubleClick={props.onDoubleClick}>
+        <BaseNode onDoubleClick={props.onDoubleClick} status={status}>
           <BaseNodeContent>
             {typeof props.icon === "string" ? (
               <Image src={props.icon} alt={props.name} width={16} height={16} />

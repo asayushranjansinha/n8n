@@ -1,7 +1,9 @@
-import type { NodeExecutor } from "@/features/executions/types";
+import Handlebars from "handlebars";
 import { NonRetriableError } from "inngest";
 import ky, { type Options as KyOptions } from "ky";
-import Handlebars from "handlebars";
+
+import type { NodeExecutor } from "@/features/executions/types";
+import { httpRequestChannel } from "@/inngest/channels/http-request";
 
 export type HttpRequestData = {
   variableName: string;
@@ -18,34 +20,52 @@ Handlebars.registerHelper("json", (context) => {
 
 export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
   data,
+  nodeId,
   context,
   step,
+  publish,
 }) => {
-  if (!data.endpoint) {
-    throw new NonRetriableError("Http Request Node: No endpoint configured.");
-  }
-  if (!data.variableName) {
-    throw new NonRetriableError(
-      "Http Request Node: No variable name configured."
+  const publishStatus = async (status: "loading" | "error" | "success") => {
+    await publish(
+      httpRequestChannel().status({
+        nodeId,
+        status,
+      })
     );
-  }
-  if (!data.method) {
-    throw new NonRetriableError("Http Request Node: No method configured.");
-  }
+  };
 
-  const variableName = data.variableName;
+  try {
+    await publishStatus("loading");
 
-  if (context[variableName]) {
-    throw new NonRetriableError(
-      `Http Request Node: Variable name '${variableName}' already exists in context. Choose a different name.`
-    );
-  }
+    // Validation checks
+    if (!data.endpoint) {
+      await publishStatus("error");
+      throw new NonRetriableError("Http Request Node: No endpoint configured.");
+    }
 
-  const updatedContext = await step.run("http-request", async () => {
-    // Compile endpoint with context (allows templates like {{previousNode.data}})
+    if (!data.variableName) {
+      await publishStatus("error");
+      throw new NonRetriableError(
+        "Http Request Node: No variable name configured."
+      );
+    }
 
+    if (!data.method) {
+      await publishStatus("error");
+      throw new NonRetriableError("Http Request Node: No method configured.");
+    }
+
+    const variableName = data.variableName;
+
+    if (context[variableName]) {
+      await publishStatus("error");
+      throw new NonRetriableError(
+        `Http Request Node: Variable name '${variableName}' already exists in context. Choose a different name.`
+      );
+    }
+
+    // Pre-compile and validate endpoint template
     let endpoint: string;
-
     try {
       const template = Handlebars.compile(data.endpoint);
       endpoint = template(context);
@@ -54,53 +74,65 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
         throw new Error("Endpoint template must resolve to a non-empty string");
       }
     } catch (e: any) {
+      await publishStatus("error");
       throw new NonRetriableError(
         `HTTP Request node: Failed to resolve endpoint template: ${e.message}`
       );
     }
 
-    const options: KyOptions = { method: data.method };
-
+    // Pre-validate JSON body for POST/PUT/PATCH requests
+    let requestBody: string | undefined;
     if (["POST", "PUT", "PATCH"].includes(data.method)) {
-      const resolved = Handlebars.compile(data.body || "{}")(context);
-      // Validate JSON before sending
       try {
-        JSON.parse(resolved);
+        const resolved = Handlebars.compile(data.body || "{}")(context);
+        JSON.parse(resolved); // Validate it's valid JSON
+        requestBody = resolved;
       } catch (error) {
+        await publishStatus("error");
         throw new NonRetriableError(
           `Http Request Node: Invalid JSON in request body. ${
             error instanceof Error ? error.message : "Unknown error"
           }`
         );
       }
-      options.body = resolved;
-      options.headers = {
-        "Content-Type": "application/json",
-      };
     }
 
-    // Use the compiled endpoint, not the raw one
-    const res = await ky(endpoint, options);
+    // Now execute the actual HTTP request in a step
+    const updatedContext = await step.run("http-request", async () => {
+      const options: KyOptions = { method: data.method };
 
-    const contentType = res.headers.get("content-type") ?? "";
-    const responseData = contentType.includes("application/json")
-      ? await res.json().catch(() => res.text())
-      : await res.text();
+      if (requestBody) {
+        options.body = requestBody;
+        options.headers = {
+          "Content-Type": "application/json",
+        };
+      }
 
-    const responsePayload = {
-      httpResponse: {
-        status: res.status,
-        statusText: res.statusText,
-        data: responseData,
-      },
-    };
+      const res = await ky(endpoint, options);
 
-    // Return context with new variable so next node can access it
-    return {
-      ...context,
-      [variableName]: responsePayload,
-    };
-  });
+      const contentType = res.headers.get("content-type") ?? "";
+      const responseData = contentType.includes("application/json")
+        ? await res.json().catch(() => res.text())
+        : await res.text();
 
-  return updatedContext;
+      const responsePayload = {
+        httpResponse: {
+          status: res.status,
+          statusText: res.statusText,
+          data: responseData,
+        },
+      };
+
+      return {
+        ...context,
+        [variableName]: responsePayload,
+      };
+    });
+
+    await publishStatus("success");
+    return updatedContext;
+  } catch (error) {
+    await publishStatus("error");
+    throw error;
+  }
 };

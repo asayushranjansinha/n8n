@@ -7,15 +7,20 @@ import {
   getExecutor,
 } from "@/features/executions/lib/executor-registry";
 import prisma from "@/lib/database";
+import { httpRequestChannel } from "./channels/http-request";
 import { inngest } from "./client";
 import { topologicalSort } from "./utils";
+import { manualTriggerChannel } from "./channels/manual-trigger";
 
 const google = createGoogleGenerativeAI();
 
 export const executeWorkflow = inngest.createFunction(
-  { id: "execute-workflow" },
-  { event: "execute/workflow" },
-  async ({ event, step }) => {
+  { id: "execute-workflow", retries: 0 }, //TODO: Remove on production
+  {
+    event: "execute/workflow",
+    channels: [httpRequestChannel(), manualTriggerChannel()],
+  },
+  async ({ event, step, publish }) => {
     console.log("🚀 executeWorkflow triggered with event:", event);
 
     const workflowId = event.data.workflowId;
@@ -68,7 +73,7 @@ export const executeWorkflow = inngest.createFunction(
 
       if (!executor) {
         // skip initial or unsupported nodes
-         console.log("⏭️ No executor found. Skipping:", node.id, node.type);
+        console.log("⏭️ No executor found. Skipping:", node.id, node.type);
         continue;
       }
 
@@ -78,6 +83,7 @@ export const executeWorkflow = inngest.createFunction(
         nodeId: node.id,
         context,
         step,
+        publish,
       });
     }
 

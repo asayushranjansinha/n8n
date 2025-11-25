@@ -17,7 +17,6 @@ export const googleFormTriggerExecutor: NodeExecutor<
 
   try {
     await publishStatus("loading");
-    // Delay inside step
     const updatedContext = await step.run("google-form-trigger", async () => {
       return context;
     });

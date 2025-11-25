@@ -17,7 +17,6 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: "Missing required query parameter: workflowId",
-          status: 400,
         },
         { status: 400 }
       );
@@ -59,7 +58,6 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: "Failed to process Google Form submission",
-        status: 500,
       },
       { status: 500 }
     );

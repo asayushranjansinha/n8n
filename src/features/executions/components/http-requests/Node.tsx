@@ -1,10 +1,15 @@
 "use client";
+
 import { memo, useState, useCallback } from "react";
 import { Node, NodeProps, useReactFlow } from "@xyflow/react";
 import { GlobeIcon } from "lucide-react";
 
+import { HTTP_REQUEST_CHANNEL_NAME } from "@/inngest/channels/http-request";
+
 import { HttpRequestDialog } from "./Dialog";
 import { BaseExecutionNode } from "@/features/executions/components/BaseExecutionNode";
+import { useNodeStatus } from "@/features/executions/hooks/useNodeStatus";
+import { fetchHttpRequestRealtimeToken } from "@/features/executions/actions/http-request/action";
 
 type HttpRequestNodeData = {
   variableName: string;
@@ -22,6 +27,13 @@ const HttpRequestNodeComponent = ({
 }: NodeProps<HttpRequestNode>) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { setNodes } = useReactFlow();
+
+  const status = useNodeStatus({
+    nodeId: id,
+    channel: HTTP_REQUEST_CHANNEL_NAME,
+    topic: "status",
+    refreshToken: fetchHttpRequestRealtimeToken,
+  });
 
   const description = data.endpoint
     ? `${data.method}:${data.endpoint}`
@@ -66,7 +78,7 @@ const HttpRequestNodeComponent = ({
         icon={GlobeIcon}
         name="HTTP Request"
         description={description}
-        status="initial"
+        status={status}
         data={data}
         onSettings={handleOpenSettings}
         onDoubleClick={handleOpenSettings}

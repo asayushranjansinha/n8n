@@ -47,7 +47,7 @@ const BaseTriggerNodeComponent = (props: BaseTriggerNodeProps) => {
       onSettings={props.onSettings}
       onDelete={handleDelete}
     >
-      <NodeStatusIndicator status="initial" className="rounded-l-2xl">
+      <NodeStatusIndicator status={props.status} className="rounded-l-2xl">
         <BaseNode
           onDoubleClick={props.onDoubleClick}
           className="rounded-l-2xl relative group"

@@ -6,6 +6,14 @@ export function createGoogleFormWebHookURL(workflowId: string): string {
   return `${baseUrl}/api/webhooks/google-form?workflowId=${workflowId}`;
 }
 
+export function createStripeWebhookURL(workflowId: string): string {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  if (!baseUrl) {
+    throw new Error("NEXT_PUBLIC_BASE_URL is not defined");
+  }
+  return `${baseUrl}/api/webhooks/stripe?workflowId=${workflowId}`;
+}
+
 export const generateGoogleFormScript = (
   webhookUrl: string
 ) => `function onFormSubmit(e) {

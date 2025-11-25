@@ -10,12 +10,17 @@ export async function POST(request: NextRequest) {
     const workflowId = url.searchParams.get("workflowId");
 
     if (!workflowId) {
-      console.error("[Google Form Webhook] Missing required query parameter: workflowId");
-      return NextResponse.json({
-        success: false,
-        error: "Missing required query parameter: workflowId",
-        status: 400,
-      });
+      console.error(
+        "[Google Form Webhook] Missing required query parameter: workflowId"
+      );
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Missing required query parameter: workflowId",
+          status: 400,
+        },
+        { status: 400 }
+      );
     }
 
     console.log(`[Google Form Webhook] workflowId: ${workflowId}`);
@@ -43,15 +48,20 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    console.log("[Google Form Webhook] Workflow execution triggered successfully");
+    console.log(
+      "[Google Form Webhook] Workflow execution triggered successfully"
+    );
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("[Google Form Webhook] Error processing request:", error);
-    return NextResponse.json({
-      success: false,
-      error: "Failed to process Google Form submission",
-      status: 500,
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to process Google Form submission",
+        status: 500,
+      },
+      { status: 500 }
+    );
   }
 }

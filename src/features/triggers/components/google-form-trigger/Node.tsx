@@ -10,7 +10,6 @@ import { useNodeStatus } from "@/features/executions/hooks/useNodeStatus";
 import { fetchGoogleFormTriggerRealtimeToken } from "@/features/triggers/actions/google-form-trigger";
 import { GOOGLE_FORM_CHANNEL_NAME } from "@/inngest/channels/google-form-trigger";
 
-// TODO: Add onSettings and onDoubleClick functions
 const GoogleFormTriggerComponent = ({ id, ...props }: NodeProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
 

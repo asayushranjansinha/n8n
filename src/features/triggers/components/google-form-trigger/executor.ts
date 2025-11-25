@@ -15,19 +15,18 @@ export const googleFormTriggerExecutor: NodeExecutor<
     );
   };
 
-  await publishStatus("loading");
+  try {
+    await publishStatus("loading");
+    // Delay inside step
+    const updatedContext = await step.run("google-form-trigger", async () => {
+      return context;
+    });
 
-  // Sleep helper
-  const sleep = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
+    await publishStatus("success");
 
-  // Delay inside step
-  const updatedContext = await step.run("google-form-trigger", async () => {
-    await sleep(10_000); // 10 seconds
-    return context;
-  });
-
-  await publishStatus("success");
-
-  return updatedContext;
+    return updatedContext;
+  } catch (error) {
+    await publishStatus("error");
+    throw error;
+  }
 };

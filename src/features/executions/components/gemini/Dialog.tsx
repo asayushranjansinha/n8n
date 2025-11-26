@@ -16,11 +16,11 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
@@ -51,7 +51,7 @@ const geminiFormSchema = z.object({
 
   model: z.enum(AVAILABLE_MODELS),
   systemPrompt: z.string().optional(),
-  userPrompt: z.string("User Prompt is required"),
+  userPrompt: z.string().min(1, "User Prompt is required"),
 });
 
 type GeminiFormValues = z.infer<typeof geminiFormSchema>;

@@ -31,9 +31,7 @@ const GeminiNodeComponent = ({ id, data, ...props }: NodeProps<GeminiNode>) => {
   });
 
   const description = data.userPrompt
-    ? `${data.model || AVAILABLE_MODELS[0]}`
-    : data.userPrompt
-    ? data.userPrompt.slice(0, 50)
+    ? data.userPrompt.slice(0, 50) + (data.userPrompt.length > 50 ? "..." : "")
     : "Not Configured";
 
   const handleOpenSettings = useCallback(() => {

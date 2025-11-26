@@ -112,11 +112,6 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
         console.log("Final endpoint invalid");
         throw new NonRetriableError("HTTP Node: Endpoint resolution failed.");
       }
-
-      if (!endpoint || typeof endpoint !== "string") {
-        console.log("Endpoint resolved empty or not string");
-        throw new Error("Endpoint template must resolve to a non-empty string");
-      }
     } catch (e: any) {
       console.log("Handlebars FAILED -> endpoint", {
         message: e.message,
@@ -183,11 +178,12 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
       let responseData;
 
       if (contentType.includes("application/json")) {
+        const text = await res.text();
         try {
-          responseData = await res.json();
+          responseData = JSON.parse(text);
           console.log("Parsed JSON response");
         } catch (e) {
-          responseData = await res.text();
+          responseData = text;
           console.log("JSON parse failed, falling back to text");
         }
       } else {

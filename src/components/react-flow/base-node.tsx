@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 // ============ BaseNode Components ============
 
 interface BaseNodeProps extends ComponentProps<"div"> {
-  status: NodeStatus;
+  status?: NodeStatus;
 }
 
 const StatusIcon = ({ status }: { status: NodeStatus }) => {
@@ -55,7 +55,7 @@ export function BaseNode({ className, status, ...props }: BaseNodeProps) {
       {...props}
     >
       {props.children}
-      <StatusIcon status={status} />
+      {status && <StatusIcon status={status} />}
     </div>
   );
 }

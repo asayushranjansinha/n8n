@@ -87,7 +87,6 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
         message: e.message,
         stack: e.stack,
       });
-      await publishStatus("error");
       throw e;
     }
 

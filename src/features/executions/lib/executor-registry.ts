@@ -14,6 +14,10 @@ import {
   type OpenAIData,
   openAIExecutor,
 } from "@/features/executions/components/openai/executor";
+import {
+  type AnthropicData,
+  anthropicExecutor,
+} from "@/features/executions/components/anthropic/executor";
 
 // Trigger executor imports
 import {
@@ -38,7 +42,8 @@ export type AllowedNodeTypes =
   | typeof NodeType.GOOGLE_FORM_TRIGGER
   | typeof NodeType.STRIPE_TRIGGER
   | typeof NodeType.GEMINI
-  | typeof NodeType.OPENAI;
+  | typeof NodeType.OPENAI
+  | typeof NodeType.ANTHROPIC;
 
 /**
  * Maps each node type to its corresponding executor with typed data
@@ -50,6 +55,7 @@ export interface ExecutorMap {
   [NodeType.STRIPE_TRIGGER]: NodeExecutor<StripeTriggerData>;
   [NodeType.GEMINI]: NodeExecutor<GeminiData>;
   [NodeType.OPENAI]: NodeExecutor<OpenAIData>;
+  [NodeType.ANTHROPIC]: NodeExecutor<AnthropicData>;
 }
 
 /**
@@ -62,6 +68,7 @@ export const executorRegistry: ExecutorMap = {
   [NodeType.STRIPE_TRIGGER]: stripeTriggerExecutor,
   [NodeType.GEMINI]: geminiExecutor,
   [NodeType.OPENAI]: openAIExecutor,
+  [NodeType.ANTHROPIC]: anthropicExecutor,
 } as const;
 
 /**
@@ -72,11 +79,11 @@ export const executorRegistry: ExecutorMap = {
  */
 export const getExecutor = (type: AllowedNodeTypes): NodeExecutor<any> => {
   const executor = executorRegistry[type];
-  
+
   if (!executor) {
     throw new Error(`No executor registered for node type: ${type}`);
   }
-  
+
   return executor;
 };
 

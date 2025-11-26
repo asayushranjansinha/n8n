@@ -58,6 +58,12 @@ export const executionNodes: NodeTypeOption[] = [
     description: "Use google gemini to generate text.",
     icon: "/gemini.svg",
   },
+  {
+    type: NodeType.OPENAI,
+    label: "Open AI",
+    description: "Use Open AI to generate text.",
+    icon: "/openai.svg",
+  },
 ];
 
 interface NodeSelectorProps {

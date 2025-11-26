@@ -35,15 +35,16 @@ import {
 } from "@/components/ui/select";
 
 export const AVAILABLE_MODELS = [
-  "gemini-2.0-flash",
-  "gemini-2.0-flash-lite",
-  "gemini-2.0-flash-live",
-  "gemini-2.5-flash",
-  "gemini-2.5-flash-lite",
-  "gemini-2.5-pro",
+  "gpt-4o",
+  "gpt-4-turbo",
+  "gpt-4",
+  "gpt-3.5-turbo",
+  "gpt-3.5-turbo-16k",
+  "gpt-3.5-turbo-1106",
 ] as const;
 
-const geminiFormSchema = z.object({
+
+const openAIFormSchema = z.object({
   variableName: z
     .string()
     .min(1, "Variable name is required")
@@ -54,19 +55,19 @@ const geminiFormSchema = z.object({
   userPrompt: z.string().min(1, "User Prompt is required"),
 });
 
-type GeminiFormValues = z.infer<typeof geminiFormSchema>;
+type OpenAIFormValues = z.infer<typeof openAIFormSchema>;
 
-const GeminiForm = ({
+const OpenAIForm = ({
   defaultValues = {},
   onSubmit,
 }: {
-  defaultValues?: Partial<GeminiFormValues>;
-  onSubmit: (values: GeminiFormValues) => void;
+  defaultValues?: Partial<OpenAIFormValues>;
+  onSubmit: (values: OpenAIFormValues) => void;
 }) => {
-  const form = useForm<GeminiFormValues>({
-    resolver: zodResolver(geminiFormSchema),
+  const form = useForm<OpenAIFormValues>({
+    resolver: zodResolver(openAIFormSchema),
     defaultValues: {
-      variableName: defaultValues.variableName ?? "gemini",
+      variableName:defaultValues.variableName ?? "openAI",
       model: defaultValues.model ?? AVAILABLE_MODELS[0],
       userPrompt: defaultValues.userPrompt ?? "",
       systemPrompt: defaultValues.systemPrompt ?? "You are a helpful assistant",
@@ -140,7 +141,7 @@ const GeminiForm = ({
               </FormControl>
 
               <FormDescription className="text-xs mt-2">
-                Choose which Gemini model will process your prompt.
+                Choose which OpenAI model will process your prompt.
               </FormDescription>
 
               <FormMessage />
@@ -189,7 +190,7 @@ const GeminiForm = ({
               </FormControl>
 
               <FormDescription className="text-xs mt-2">
-                The main message sent to Gemini. Supports variables:
+                The main message sent to OpenAI. Supports variables:
                 <br />
                 <code className="text-blue-600">{`{{userData.name}}`}</code>
               </FormDescription>
@@ -201,14 +202,14 @@ const GeminiForm = ({
 
         {/* Submit */}
         <Button type="submit" className="w-full">
-          Save Gemini Request
+          Save OpenAI Request
         </Button>
       </form>
     </Form>
   );
 };
 
-export const GeminiDialog = ({
+export const OpenAIDialog = ({
   open,
   onOpenChange,
   onSubmit,
@@ -216,22 +217,22 @@ export const GeminiDialog = ({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  defaultValues?: Partial<GeminiFormValues>;
-  onSubmit: (values: GeminiFormValues) => void;
+  defaultValues?: Partial<OpenAIFormValues>;
+  onSubmit: (values: OpenAIFormValues) => void;
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[80vh] w-full sm:max-w-lg p-0 flex flex-col overflow-hidden">
         <DialogHeader className="px-6 py-4 border-b shrink-0">
-          <DialogTitle>Gemini AI</DialogTitle>
+          <DialogTitle>OpenAI AI</DialogTitle>
           <DialogDescription>
-            Configure how this node sends a prompt to Gemini and stores the AI
+            Configure how this node sends a prompt to OpenAI and stores the AI
             response
           </DialogDescription>
         </DialogHeader>
 
         <div className="overflow-y-auto overflow-x-hidden px-6 pb-6 flex-1">
-          <GeminiForm
+          <OpenAIForm
             defaultValues={defaultValues}
             onSubmit={(v) => {
               onSubmit(v);

@@ -1,19 +1,18 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { NonRetriableError } from "inngest";
 
-import { HttpRequestData } from "@/features/executions/components/http-requests/executor";
 import {
   AllowedNodeTypes,
   getExecutor,
 } from "@/features/executions/lib/executor-registry";
 import prisma from "@/lib/database";
-import { inngest } from "./client";
-import { topologicalSort } from "./utils";
+import { geminiChannel } from "./channels/gemini";
+import { googleFormTriggerChannel } from "./channels/google-form-trigger";
 import { httpRequestChannel } from "./channels/http-request";
 import { manualTriggerChannel } from "./channels/manual-trigger";
-import { googleFormTriggerChannel } from "./channels/google-form-trigger";
 import { stripeTriggerChannel } from "./channels/stripe-trigger";
-import { geminiChannel } from "./channels/gemini";
+import { inngest } from "./client";
+import { topologicalSort } from "./utils";
 
 const google = createGoogleGenerativeAI();
 
@@ -88,7 +87,7 @@ export const executeWorkflow = inngest.createFunction(
 
       console.log("Data in ingest function: ", node.data);
       context = await executor({
-        data: node.data as HttpRequestData,
+        data: node.data,
         nodeId: node.id,
         context,
         step,

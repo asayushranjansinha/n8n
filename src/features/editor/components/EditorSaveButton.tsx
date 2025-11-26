@@ -15,11 +15,6 @@ export const EditorSaveButton = ({ workflowId }: { workflowId: string }) => {
 
     const nodes = editor.getNodes();
     const edges = editor.getEdges();
-
-    console.log("Saving workflow...");
-    console.log("Nodes:", nodes);
-    console.log("Edges:", edges);
-
     saveWorkflow.mutate({ id: workflowId, nodes, edges });
   };
 

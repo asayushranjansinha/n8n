@@ -1,8 +1,10 @@
 import type { ComponentProps } from "react";
-import { CheckCircleIcon, Loader2, XCircleIcon } from "lucide-react";
+import { CheckCircleIcon, LoaderIcon, XCircleIcon } from "lucide-react";
 
 import { NodeStatus } from "@/components/react-flow/node-status-indicator";
 import { cn } from "@/lib/utils";
+
+// ============ BaseNode Components ============
 
 interface BaseNodeProps extends ComponentProps<"div"> {
   status?: NodeStatus;
@@ -10,7 +12,7 @@ interface BaseNodeProps extends ComponentProps<"div"> {
 
 const StatusIcon = ({ status }: { status: NodeStatus }) => {
   const containerClasses =
-    "absolute right-0.5 bottom-0.5 flex items-center justify-center w-2 h-2";
+    "absolute right-0.5 bottom-0.5 flex items-center justify-center w-2 h-2 z-10";
   const iconClasses = "size-full stroke-[3px]";
 
   switch (status) {
@@ -29,7 +31,9 @@ const StatusIcon = ({ status }: { status: NodeStatus }) => {
     case "loading":
       return (
         <div className={containerClasses}>
-          <Loader2 className={cn(iconClasses, "text-blue-700 animate-spin")} />
+          <LoaderIcon
+            className={cn(iconClasses, "text-blue-700 animate-spin")}
+          />
         </div>
       );
     default:
@@ -43,23 +47,19 @@ export function BaseNode({ className, status, ...props }: BaseNodeProps) {
       className={cn(
         "bg-card text-card-foreground relative rounded-sm border border-muted-foreground hover:bg-accent",
         "hover:ring-1",
-        "[.react-flow\\_\\_node.selected_&]:border-muted-foreground",
-        "[.react-flow\\_\\_node.selected_&]:shadow-lg",
+        "[.react-flow__node.selected_&]:border-muted-foreground",
+        "[.react-flow__node.selected_&]:shadow-lg",
         className
       )}
       tabIndex={0}
       {...props}
     >
       {props.children}
-      {status && status !== "initial" && <StatusIcon status={status} />}
+      {status && <StatusIcon status={status} />}
     </div>
   );
 }
 
-/**
- * A container for a consistent header layout intended to be used inside the
- * `<BaseNode />` component.
- */
 export function BaseNodeHeader({
   className,
   ...props
@@ -75,10 +75,6 @@ export function BaseNodeHeader({
   );
 }
 
-/**
- * The title text for the node. To maintain a native application feel, the title
- * text is not selectable.
- */
 export function BaseNodeHeaderTitle({
   className,
   ...props

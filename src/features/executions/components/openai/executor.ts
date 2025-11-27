@@ -25,6 +25,7 @@ Handlebars.registerHelper("json", (context) => {
 
 export const openAiExecutor: NodeExecutor<OpenAiData> = async ({
   data,
+  userId,
   nodeId,
   context,
   step,
@@ -62,14 +63,16 @@ export const openAiExecutor: NodeExecutor<OpenAiData> = async ({
       "openai-fetch-credential",
       async () => {
         return await prisma.credential.findUnique({
-          where: { id: data.credentialId },
+          where: { id: data.credentialId, userId },
         });
       }
     );
 
     if (!userCredential || userCredential.type !== CredentialType.OPENAI) {
       await publishStatus("error");
-      throw new NonRetriableError("OpenAI Node: Invalid OpenAI API Credential.");
+      throw new NonRetriableError(
+        "OpenAI Node: Invalid OpenAI API Credential."
+      );
     }
 
     // Create OpenAI instance using user credential
@@ -91,7 +94,11 @@ export const openAiExecutor: NodeExecutor<OpenAiData> = async ({
     let text = "";
 
     const firstStep = aiSteps[0];
-    if (firstStep && Array.isArray(firstStep.content) && firstStep.content[0]?.type === "text") {
+    if (
+      firstStep &&
+      Array.isArray(firstStep.content) &&
+      firstStep.content[0]?.type === "text"
+    ) {
       text = firstStep.content[0].text;
     }
 

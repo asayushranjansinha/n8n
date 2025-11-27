@@ -18,6 +18,7 @@ import {
   type AnthropicData,
   anthropicExecutor,
 } from "@/features/executions/components/anthropic/executor";
+import { type DiscordData, discordExecutor } from "@/features/executions/components/discord/executor";
 
 // Trigger executor imports
 import {
@@ -43,7 +44,8 @@ export type AllowedNodeTypes =
   | typeof NodeType.STRIPE_TRIGGER
   | typeof NodeType.GEMINI
   | typeof NodeType.OPENAI
-  | typeof NodeType.ANTHROPIC;
+  | typeof NodeType.ANTHROPIC
+  | typeof NodeType.DISCORD
 
 /**
  * Maps each node type to its corresponding executor with typed data
@@ -56,6 +58,7 @@ export interface ExecutorMap {
   [NodeType.GEMINI]: NodeExecutor<GeminiData>;
   [NodeType.OPENAI]: NodeExecutor<OpenAiData>;
   [NodeType.ANTHROPIC]: NodeExecutor<AnthropicData>;
+  [NodeType.DISCORD]: NodeExecutor<DiscordData>;
 }
 
 /**
@@ -69,6 +72,7 @@ export const executorRegistry: ExecutorMap = {
   [NodeType.GEMINI]: geminiExecutor,
   [NodeType.OPENAI]: openAiExecutor,
   [NodeType.ANTHROPIC]: anthropicExecutor,
+  [NodeType.DISCORD]: discordExecutor,
 } as const;
 
 /**

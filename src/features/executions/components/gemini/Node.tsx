@@ -5,11 +5,12 @@ import { memo, useCallback, useState } from "react";
 
 import { fetchGeminiRealtimeToken } from "@/features/executions/actions/gemini";
 import { BaseExecutionNode } from "@/features/executions/components/BaseExecutionNode";
+import { GEMINI_AVAILABLE_MODELS } from "@/features/executions/constants/gemini";
 import { useNodeStatus } from "@/features/executions/hooks/useNodeStatus";
 import { GEMINI_REQUEST_CHANNEL_NAME } from "@/inngest/channels/gemini";
-import { AVAILABLE_MODELS, GeminiDialog } from "./Dialog";
+import { GeminiDialog } from "./Dialog";
 
-type GeminiModel = (typeof AVAILABLE_MODELS)[number];
+type GeminiModel = (typeof GEMINI_AVAILABLE_MODELS)[number];
 type GeminiNodeData = {
   variableName?: string;
   model?: GeminiModel;
@@ -40,9 +41,6 @@ const GeminiNodeComponent = ({ id, data, ...props }: NodeProps<GeminiNode>) => {
 
   const handleSubmit = useCallback(
     (values: GeminiNodeData) => {
-      // Log the old data and the new submitted values
-      console.log("Before update:", { old: data, incoming: values });
-
       setNodes((nodes) =>
         nodes.map((node) =>
           node.id === id ? { ...node, data: { ...node.data, ...values } } : node
@@ -51,7 +49,7 @@ const GeminiNodeComponent = ({ id, data, ...props }: NodeProps<GeminiNode>) => {
 
       setDialogOpen(false);
     },
-    [id, setNodes, data]
+    [id, setNodes]
   );
 
   return (

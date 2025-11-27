@@ -5,9 +5,9 @@ import { NonRetriableError } from "inngest";
 
 import type { NodeExecutor } from "@/features/executions/types";
 import { geminiChannel } from "@/inngest/channels/gemini";
-import { AVAILABLE_MODELS } from "./Dialog";
+import { GEMINI_AVAILABLE_MODELS } from "@/features/executions/constants/gemini";
 
-type GeminiModel = (typeof AVAILABLE_MODELS)[number];
+type GeminiModel = (typeof GEMINI_AVAILABLE_MODELS)[number];
 
 export type GeminiData = {
   model: GeminiModel;

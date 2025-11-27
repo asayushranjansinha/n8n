@@ -80,12 +80,7 @@ export const DiscordNodeForm = ({
               </FormControl>
               <FormDescription className="text-xs mt-2">
                 This sets the variable key used by n8n to store the Discord
-                webhook response. Use a valid JavaScript variable name. You can
-                reference the response later like:
-                <br />
-                <span className="text-blue-600 font-mono text-xs bg-muted px-2 py-1 rounded inline-block mt-1">
-                  {`{{${variablePreview}.discordResponse}}`}
-                </span>
+                webhook response.
               </FormDescription>
               <FormMessage />
             </FormItem>

@@ -10,6 +10,7 @@ import { OpenAiNode } from "@/features/executions/components/openai/Node";
 import { GoogleFormTriggerNode } from "@/features/triggers/components/google-form-trigger/Node";
 import { ManualTriggerNode } from "@/features/triggers/components/manual-trigger/Node";
 import { StripeTriggerNode } from "@/features/triggers/components/stripe-trigger/Node";
+import { SlackNode } from "@/features/executions/components/slack/Node";
 
 export const nodeComponents = {
   [NodeType.INITIAL]: InitialNode,
@@ -21,6 +22,7 @@ export const nodeComponents = {
   [NodeType.OPENAI]: OpenAiNode,
   [NodeType.ANTHROPIC]: AnthropicNode,
   [NodeType.DISCORD]: DiscordNode,
+  [NodeType.SLACK]: SlackNode,
 } as const satisfies NodeTypes;
 
 export type RegisteredNodeType = keyof typeof nodeComponents;

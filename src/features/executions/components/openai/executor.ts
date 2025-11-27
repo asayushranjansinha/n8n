@@ -5,12 +5,15 @@ import { NonRetriableError } from "inngest";
 
 import type { NodeExecutor } from "@/features/executions/types";
 import { openAiChannel } from "@/inngest/channels/openai";
-import { AVAILABLE_MODELS } from "./Dialog";
+import { OPENAI_AVAILABLE_MODELS } from "@/features/executions/constants/openai";
+import prisma from "@/lib/database";
+import { CredentialType } from "@/generated/prisma/enums";
 
-type OpenAIModel = (typeof AVAILABLE_MODELS)[number];
+type OpenAIModel = (typeof OPENAI_AVAILABLE_MODELS)[number];
 
-export type OpenAIData = {
+export type OpenAiData = {
   model: OpenAIModel;
+  credentialId: string;
   userPrompt: string;
   systemPrompt?: string;
   variableName: string;
@@ -20,10 +23,7 @@ Handlebars.registerHelper("json", (context) => {
   return new Handlebars.SafeString(JSON.stringify(context, null, 2));
 });
 
-const API_KEY = process.env.OPENAI_API_KEY as string;
-const openAIAI = createOpenAI({ apiKey: API_KEY });
-
-export const openAIExecutor: NodeExecutor<OpenAIData> = async ({
+export const openAiExecutor: NodeExecutor<OpenAiData> = async ({
   data,
   nodeId,
   context,
@@ -37,10 +37,14 @@ export const openAIExecutor: NodeExecutor<OpenAIData> = async ({
   try {
     await publishStatus("loading");
 
-    const variableName = data.variableName;
-    if (!variableName) {
+    if (!data.credentialId) {
       await publishStatus("error");
-      throw new NonRetriableError("OpenAI Node: Variable node is missing.");
+      throw new NonRetriableError("OpenAI Node: Credential is missing.");
+    }
+
+    if (!data.variableName) {
+      await publishStatus("error");
+      throw new NonRetriableError("OpenAI Node: Variable name is missing.");
     }
 
     if (!data.userPrompt) {
@@ -54,8 +58,26 @@ export const openAIExecutor: NodeExecutor<OpenAIData> = async ({
 
     const prompt = Handlebars.compile(data.userPrompt)(context);
 
+    const userCredential = await step.run(
+      "openai-fetch-credential",
+      async () => {
+        return await prisma.credential.findUnique({
+          where: { id: data.credentialId },
+        });
+      }
+    );
+
+    if (!userCredential || userCredential.type !== CredentialType.OPENAI) {
+      await publishStatus("error");
+      throw new NonRetriableError("OpenAI Node: Invalid OpenAI API Credential.");
+    }
+
+    // Create OpenAI instance using user credential
+    const openAI = createOpenAI({ apiKey: userCredential.value });
+
+    // Generate text
     const result = await step.ai.wrap("openai-generate-text", generateText, {
-      model: openAIAI(data.model),
+      model: openAI(data.model),
       system,
       prompt,
       experimental_telemetry: {
@@ -69,11 +91,7 @@ export const openAIExecutor: NodeExecutor<OpenAIData> = async ({
     let text = "";
 
     const firstStep = aiSteps[0];
-    if (
-      firstStep &&
-      Array.isArray(firstStep.content) &&
-      firstStep.content[0]?.type === "text"
-    ) {
+    if (firstStep && Array.isArray(firstStep.content) && firstStep.content[0]?.type === "text") {
       text = firstStep.content[0].text;
     }
 
@@ -81,7 +99,7 @@ export const openAIExecutor: NodeExecutor<OpenAIData> = async ({
 
     return {
       ...context,
-      [variableName]: {
+      [data.variableName]: {
         aiResponse: text,
       },
     };

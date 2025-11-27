@@ -4,7 +4,7 @@ import type { NodeTypes } from "@xyflow/react";
 import { InitialNode } from "@/components/react-flow/custom/InitialNode";
 import { GeminiNode } from "@/features/executions/components/gemini/Node";
 import { HttpRequestNode } from "@/features/executions/components/http-requests/Node";
-import { OpenAINode } from "@/features/executions/components/openai/Node";
+import { OpenAiNode } from "@/features/executions/components/openai/Node";
 import { GoogleFormTriggerNode } from "@/features/triggers/components/google-form-trigger/Node";
 import { ManualTriggerNode } from "@/features/triggers/components/manual-trigger/Node";
 import { StripeTriggerNode } from "@/features/triggers/components/stripe-trigger/Node";
@@ -17,7 +17,7 @@ export const nodeComponents = {
   [NodeType.GOOGLE_FORM_TRIGGER]: GoogleFormTriggerNode,
   [NodeType.STRIPE_TRIGGER]: StripeTriggerNode,
   [NodeType.GEMINI]: GeminiNode,
-  [NodeType.OPENAI]: OpenAINode,
+  [NodeType.OPENAI]: OpenAiNode,
   [NodeType.ANTHROPIC]: AnthropicNode,
 } as const satisfies NodeTypes;
 

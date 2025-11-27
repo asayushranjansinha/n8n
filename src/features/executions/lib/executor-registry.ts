@@ -11,8 +11,8 @@ import {
   httpRequestExecutor,
 } from "@/features/executions/components/http-requests/executor";
 import {
-  type OpenAIData,
-  openAIExecutor,
+  type OpenAiData,
+  openAiExecutor,
 } from "@/features/executions/components/openai/executor";
 import {
   type AnthropicData,
@@ -54,7 +54,7 @@ export interface ExecutorMap {
   [NodeType.GOOGLE_FORM_TRIGGER]: NodeExecutor<GoogleFormTriggerData>;
   [NodeType.STRIPE_TRIGGER]: NodeExecutor<StripeTriggerData>;
   [NodeType.GEMINI]: NodeExecutor<GeminiData>;
-  [NodeType.OPENAI]: NodeExecutor<OpenAIData>;
+  [NodeType.OPENAI]: NodeExecutor<OpenAiData>;
   [NodeType.ANTHROPIC]: NodeExecutor<AnthropicData>;
 }
 
@@ -67,7 +67,7 @@ export const executorRegistry: ExecutorMap = {
   [NodeType.GOOGLE_FORM_TRIGGER]: googleFormTriggerExecutor,
   [NodeType.STRIPE_TRIGGER]: stripeTriggerExecutor,
   [NodeType.GEMINI]: geminiExecutor,
-  [NodeType.OPENAI]: openAIExecutor,
+  [NodeType.OPENAI]: openAiExecutor,
   [NodeType.ANTHROPIC]: anthropicExecutor,
 } as const;
 

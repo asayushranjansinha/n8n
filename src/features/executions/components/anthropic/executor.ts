@@ -26,6 +26,7 @@ Handlebars.registerHelper("json", (context) => {
 export const anthropicExecutor: NodeExecutor<AnthropicData> = async ({
   data,
   nodeId,
+  userId,
   context,
   step,
   publish,
@@ -62,7 +63,7 @@ export const anthropicExecutor: NodeExecutor<AnthropicData> = async ({
       "anthropic-fetch-credential",
       async () => {
         return await prisma.credential.findUnique({
-          where: { id: data.credentialId },
+          where: { id: data.credentialId, userId },
         });
       }
     );
@@ -91,7 +92,11 @@ export const anthropicExecutor: NodeExecutor<AnthropicData> = async ({
     let text = "";
 
     const firstStep = aiSteps[0];
-    if (firstStep && Array.isArray(firstStep.content) && firstStep.content[0]?.type === "text") {
+    if (
+      firstStep &&
+      Array.isArray(firstStep.content) &&
+      firstStep.content[0]?.type === "text"
+    ) {
       text = firstStep.content[0].text;
     }
 

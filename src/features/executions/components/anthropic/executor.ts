@@ -5,12 +5,15 @@ import { NonRetriableError } from "inngest";
 
 import type { NodeExecutor } from "@/features/executions/types";
 import { anthropicChannel } from "@/inngest/channels/anthropic";
-import { AVAILABLE_MODELS } from "./Dialog";
+import { ANTHROPIC_AVAILABLE_MODELS } from "@/features/executions/constants/anthropic";
+import prisma from "@/lib/database";
+import { CredentialType } from "@/generated/prisma/enums";
 
-type AnthropicModel = (typeof AVAILABLE_MODELS)[number];
+type AnthropicModel = (typeof ANTHROPIC_AVAILABLE_MODELS)[number];
 
 export type AnthropicData = {
   model: AnthropicModel;
+  credentialId: string;
   userPrompt: string;
   systemPrompt?: string;
   variableName: string;
@@ -19,9 +22,6 @@ export type AnthropicData = {
 Handlebars.registerHelper("json", (context) => {
   return new Handlebars.SafeString(JSON.stringify(context, null, 2));
 });
-
-const API_KEY = process.env.ANTHROPIC_API_KEY as string;
-const AnthropicAI = createAnthropic({ apiKey: API_KEY });
 
 export const anthropicExecutor: NodeExecutor<AnthropicData> = async ({
   data,
@@ -37,11 +37,14 @@ export const anthropicExecutor: NodeExecutor<AnthropicData> = async ({
   try {
     await publishStatus("loading");
 
-    const variableName = data.variableName;
-
-    if (!variableName) {
+    if (!data.credentialId) {
       await publishStatus("error");
-      throw new NonRetriableError("Anthropic Node: Variable node is missing.");
+      throw new NonRetriableError("Anthropic Node: Credential is missing.");
+    }
+
+    if (!data.variableName) {
+      await publishStatus("error");
+      throw new NonRetriableError("Anthropic Node: Variable name is missing.");
     }
 
     if (!data.userPrompt) {
@@ -55,8 +58,26 @@ export const anthropicExecutor: NodeExecutor<AnthropicData> = async ({
 
     const prompt = Handlebars.compile(data.userPrompt)(context);
 
+    const userCredential = await step.run(
+      "anthropic-fetch-credential",
+      async () => {
+        return await prisma.credential.findUnique({
+          where: { id: data.credentialId },
+        });
+      }
+    );
+
+    if (!userCredential || userCredential.type !== CredentialType.ANTHROPIC) {
+      await publishStatus("error");
+      throw new NonRetriableError("Anthropic Node: Invalid API Credential.");
+    }
+
+    // Create Anthropic instance using user credential
+    const anthropic = createAnthropic({ apiKey: userCredential.value });
+
+    // Generate text
     const result = await step.ai.wrap("anthropic-generate-text", generateText, {
-      model: AnthropicAI(data.model),
+      model: anthropic(data.model),
       system,
       prompt,
       experimental_telemetry: {
@@ -70,11 +91,7 @@ export const anthropicExecutor: NodeExecutor<AnthropicData> = async ({
     let text = "";
 
     const firstStep = aiSteps[0];
-    if (
-      firstStep &&
-      Array.isArray(firstStep.content) &&
-      firstStep.content[0]?.type === "text"
-    ) {
+    if (firstStep && Array.isArray(firstStep.content) && firstStep.content[0]?.type === "text") {
       text = firstStep.content[0].text;
     }
 
@@ -82,7 +99,7 @@ export const anthropicExecutor: NodeExecutor<AnthropicData> = async ({
 
     return {
       ...context,
-      [variableName]: {
+      [data.variableName]: {
         aiResponse: text,
       },
     };

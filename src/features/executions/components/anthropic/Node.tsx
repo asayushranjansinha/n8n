@@ -5,21 +5,23 @@ import { memo, useCallback, useState } from "react";
 
 import { fetchAnthropicRealtimeToken } from "@/features/executions/actions/anthropic";
 import { BaseExecutionNode } from "@/features/executions/components/BaseExecutionNode";
+import { ANTHROPIC_AVAILABLE_MODELS } from "@/features/executions/constants/anthropic";
 import { useNodeStatus } from "@/features/executions/hooks/useNodeStatus";
 import { ANTHROPIC_REQUEST_CHANNEL_NAME } from "@/inngest/channels/anthropic";
-import { AVAILABLE_MODELS, AnthropicDialog } from "./Dialog";
+import { AnthropicDialog } from "./Dialog";
 
-type AnthropicModel = (typeof AVAILABLE_MODELS)[number];
-type anthropicNodeData = {
-  variableName?: string;
+type AnthropicModel = (typeof ANTHROPIC_AVAILABLE_MODELS)[number];
+type AnthropicNodeData = {
   model?: AnthropicModel;
+  credentialId?: string;
   userPrompt?: string;
   systemPrompt?: string;
+  variableName?: string;
 };
 
-type anthropicNode = Node<anthropicNodeData>;
+type AnthropicNode = Node<AnthropicNodeData>;
 
-const AnthropicNodeComponent = ({ id, data, ...props }: NodeProps<anthropicNode>) => {
+const AnthropicNodeComponent = ({ id, data, ...props }: NodeProps<AnthropicNode>) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { setNodes } = useReactFlow();
 
@@ -39,10 +41,7 @@ const AnthropicNodeComponent = ({ id, data, ...props }: NodeProps<anthropicNode>
   }, []);
 
   const handleSubmit = useCallback(
-    (values: anthropicNodeData) => {
-      // Log the old data and the new submitted values
-      console.log("Before update:", { old: data, incoming: values });
-
+    (values: AnthropicNodeData) => {
       setNodes((nodes) =>
         nodes.map((node) =>
           node.id === id ? { ...node, data: { ...node.data, ...values } } : node
@@ -51,7 +50,7 @@ const AnthropicNodeComponent = ({ id, data, ...props }: NodeProps<anthropicNode>
 
       setDialogOpen(false);
     },
-    [id, setNodes, data]
+    [id, setNodes]
   );
 
   return (
@@ -60,12 +59,7 @@ const AnthropicNodeComponent = ({ id, data, ...props }: NodeProps<anthropicNode>
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         onSubmit={handleSubmit}
-        defaultValues={{
-          model: data.model,
-          systemPrompt: data.systemPrompt,
-          userPrompt: data.userPrompt,
-          variableName: data.variableName,
-        }}
+        defaultValues={data}
       />
 
       <BaseExecutionNode

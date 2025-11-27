@@ -5,21 +5,23 @@ import { memo, useCallback, useState } from "react";
 
 import { fetchOpenAIRealtimeToken } from "@/features/executions/actions/openai";
 import { BaseExecutionNode } from "@/features/executions/components/BaseExecutionNode";
+import { OPENAI_AVAILABLE_MODELS } from "@/features/executions/constants/openai";
 import { useNodeStatus } from "@/features/executions/hooks/useNodeStatus";
 import { OPEN_AI_REQUEST_CHANNEL_NAME } from "@/inngest/channels/openai";
-import { AVAILABLE_MODELS, OpenAIDialog } from "./Dialog";
+import { OpenAiDialog } from "./Dialog";
 
-type openAIModel = (typeof AVAILABLE_MODELS)[number];
-type openAINodeData = {
-  variableName?: string;
-  model?: openAIModel;
+type OpenAIModel = (typeof OPENAI_AVAILABLE_MODELS)[number];
+type OpenAiNodeData = {
+  model?: OpenAIModel;
+  credentialId?: string;
   userPrompt?: string;
   systemPrompt?: string;
+  variableName?: string;
 };
 
-type openAINode = Node<openAINodeData>;
+type OpenAiNode = Node<OpenAiNodeData>;
 
-const OpenAINodeComponent = ({ id, data, ...props }: NodeProps<openAINode>) => {
+const OpenAiNodeComponent = ({ id, data, ...props }: NodeProps<OpenAiNode>) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { setNodes } = useReactFlow();
 
@@ -39,10 +41,7 @@ const OpenAINodeComponent = ({ id, data, ...props }: NodeProps<openAINode>) => {
   }, []);
 
   const handleSubmit = useCallback(
-    (values: openAINodeData) => {
-      // Log the old data and the new submitted values
-      console.log("Before update:", { old: data, incoming: values });
-
+    (values: OpenAiNodeData) => {
       setNodes((nodes) =>
         nodes.map((node) =>
           node.id === id ? { ...node, data: { ...node.data, ...values } } : node
@@ -51,27 +50,22 @@ const OpenAINodeComponent = ({ id, data, ...props }: NodeProps<openAINode>) => {
 
       setDialogOpen(false);
     },
-    [id, setNodes, data]
+    [id, setNodes]
   );
 
   return (
     <>
-      <OpenAIDialog
+      <OpenAiDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         onSubmit={handleSubmit}
-        defaultValues={{
-          model: data.model,
-          systemPrompt: data.systemPrompt,
-          userPrompt: data.userPrompt,
-          variableName: data.variableName,
-        }}
+        defaultValues={data}
       />
 
       <BaseExecutionNode
         id={id}
         icon="/openai.svg"
-        name="Open AI"
+        name="OpenAI"
         description={description}
         status={status}
         data={data}
@@ -83,5 +77,5 @@ const OpenAINodeComponent = ({ id, data, ...props }: NodeProps<openAINode>) => {
   );
 };
 
-export const OpenAINode = memo(OpenAINodeComponent);
-OpenAINode.displayName = "OpenAINode";
+export const OpenAiNode = memo(OpenAiNodeComponent);
+OpenAiNode.displayName = "OpenAiNode";

@@ -1,3 +1,5 @@
+"use client";
+
 import { useCredentialsSearchParams } from "@/features/credentials/hooks/useCredentialSearchParams";
 import { useEntitySearch } from "@/hooks/useEntitySearch";
 

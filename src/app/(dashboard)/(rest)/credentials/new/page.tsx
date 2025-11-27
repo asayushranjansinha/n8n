@@ -1,11 +1,9 @@
-import React from "react";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
 import { CredentialsForm } from "@/features/credentials/components/CredentialsForm";
 

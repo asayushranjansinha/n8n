@@ -11,8 +11,8 @@ export const prefetchcredentials = (params: Input) => {
 };
 
 /**
- * Prefetches workflow by workflowId for SSR.
+ * Prefetches credential by credentialId for SSR.
  */
-export const prefetchWorkflow = (credentialId: string) => {
+export const prefetchcredential = (credentialId: string) => {
   return prefetch(trpc.credentials.getOne.queryOptions({ id: credentialId }));
 };

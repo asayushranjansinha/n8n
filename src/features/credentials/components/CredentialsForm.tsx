@@ -63,6 +63,7 @@ const credentialTypeOptions = [
     image: "/anthropic.svg",
   },
 ];
+
 export const CredentialsForm = ({
   initialData,
   className,
@@ -117,87 +118,93 @@ export const CredentialsForm = ({
   const isPending = createCredential.isPending || upgradeCredential.isPending;
 
   return (
-    <Form {...form}>
-      <form
-        {...props}
-        onSubmit={form.handleSubmit(onSubmit)}
-        className={cn("flex flex-col gap-6 w-full flex-1", className)}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
+    <>
+      {modal}
+
+      <Form {...form}>
+        <form
+          {...props}
+          onSubmit={form.handleSubmit(onSubmit)}
+          className={cn("flex flex-col gap-6 w-full flex-1", className)}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="My API Key" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a credential type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {credentialTypeOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          <div className="flex items-center gap-2">
+                            <img
+                              src={option.image}
+                              alt={option.name}
+                              className="size-5"
+                            />
+                            {option.name}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <FormField
             control={form.control}
-            name="name"
+            name="value"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Value</FormLabel>
                 <FormControl>
-                  <Input placeholder="My API Key" {...field} />
+                  <Input
+                    type="password"
+                    placeholder="sk-............."
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Type</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a credential type" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {credentialTypeOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={option.image}
-                            alt={option.name}
-                            className="size-5"
-                          />
-                          {option.name}
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <FormField
-          control={form.control}
-          name="value"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Value</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  placeholder="sk-............."
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex flex-col md:flex-row md:justify-end mt-auto gap-3">
-          <Button variant="outline" asChild type="button">
-            <Link href="/credentials" prefetch>Cancel</Link>
-          </Button>
-          <Button type="submit" disabled={isPending}>
-            {initialData?.id ? "Update Credential" : "Create Credential"}
-          </Button>
-        </div>
-      </form>
-    </Form>
+          <div className="flex flex-col md:flex-row md:justify-end mt-auto gap-3">
+            <Button variant="outline" asChild type="button">
+              <Link href="/credentials" prefetch>
+                Cancel
+              </Link>
+            </Button>
+            <Button type="submit" disabled={isPending}>
+              {initialData?.id ? "Update Credential" : "Create Credential"}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </>
   );
 };

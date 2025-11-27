@@ -49,7 +49,7 @@ const GeminiNodeComponent = ({ id, data, ...props }: NodeProps<GeminiNode>) => {
 
       setDialogOpen(false);
     },
-    [id, setNodes, data]
+    [id, setNodes]
   );
 
   return (

@@ -1,30 +1,37 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { formatDistanceToNow } from "date-fns";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
+
+import { CredentialType } from "@/generated/prisma/enums";
 
 import { Button } from "@/components/ui/button";
 
 import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
+import { useCredentialsByType } from "@/features/credentials/hooks/useCredentials";
 import { GEMINI_AVAILABLE_MODELS } from "@/features/executions/constants/gemini";
+import { useRouter } from "next/navigation";
 
 const geminiFormSchema = z.object({
   variableName: z
@@ -34,6 +41,7 @@ const geminiFormSchema = z.object({
 
   model: z.enum(GEMINI_AVAILABLE_MODELS),
   systemPrompt: z.string().optional(),
+  credentialId: z.string().min(1, "Credential is required"),
   userPrompt: z.string().min(1, "User Prompt is required"),
 });
 
@@ -46,9 +54,16 @@ export const GeminiNodeForm = ({
   defaultValues?: Partial<GeminiFormValues>;
   onSubmit: (values: GeminiFormValues) => void;
 }) => {
+  const router = useRouter();
+
+  // Get credentials saved in database for gemini ai model
+  const { data: credentials, isLoading: isLoadingCredentials } =
+    useCredentialsByType(CredentialType.GEMINI);
+
   const form = useForm<GeminiFormValues>({
     resolver: zodResolver(geminiFormSchema),
     defaultValues: {
+      credentialId: defaultValues.credentialId ?? "",
       variableName: defaultValues.variableName ?? "gemini",
       model: defaultValues.model ?? GEMINI_AVAILABLE_MODELS[0],
       userPrompt: defaultValues.userPrompt ?? "",
@@ -57,6 +72,21 @@ export const GeminiNodeForm = ({
   });
 
   const variablePreview = form.watch("variableName") || "response";
+
+  // Use effect to alert user for no credentials on mount
+  useEffect(() => {
+    if (!isLoadingCredentials && credentials && credentials.length === 0) {
+      toast("Gemini API key not found", {
+        description: "Add an API key in Credentials to use this node.",
+        action: {
+          label: "Add API Key",
+          onClick: () => {
+            router.push("/credentials");
+          },
+        },
+      });
+    }
+  }, [isLoadingCredentials, credentials]);
 
   return (
     <Form {...form}>
@@ -67,7 +97,7 @@ export const GeminiNodeForm = ({
         })}
         className="space-y-6"
       >
-        {/* ---------------- Step 1 ---------------- */}
+        {/* variableName */}
         <FormField
           control={form.control}
           name="variableName"
@@ -95,7 +125,7 @@ export const GeminiNodeForm = ({
           )}
         />
 
-        {/* ---------------- Step 2 ---------------- */}
+        {/* Model */}
         <FormField
           control={form.control}
           name="model"
@@ -105,10 +135,7 @@ export const GeminiNodeForm = ({
                 Step 2: Select Model
               </FormLabel>
               <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value}
-                >
+                <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select model" />
                   </SelectTrigger>
@@ -131,7 +158,52 @@ export const GeminiNodeForm = ({
           )}
         />
 
-        {/* ---------------- Step 3 ---------------- */}
+        {/* credentialId */}
+        <FormField
+          name="credentialId"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Choose your API Key</FormLabel>
+              <FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={
+                    isLoadingCredentials ||
+                    !credentials ||
+                    credentials.length === 0
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select API Key" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {credentials?.map((credential) => (
+                      <SelectItem key={credential.id} value={credential.id}>
+                        <div className="flex gap-2.5 text-sm items-baseline justify-between">
+                          <span className="font-medium">{credential.name}</span>
+                          <span className="text-xs text-muted-foreground">
+                            Created{" "}
+                            {formatDistanceToNow(credential.createdAt, {
+                              addSuffix: true,
+                            })}
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormDescription className="text-xs mt-2">
+                Choose which API key will process your prompt.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* System Prompt */}
         <FormField
           control={form.control}
           name="systemPrompt"
@@ -157,7 +229,7 @@ export const GeminiNodeForm = ({
           )}
         />
 
-        {/* ---------------- Step 4 ---------------- */}
+        {/* userPrompt */}
         <FormField
           control={form.control}
           name="userPrompt"

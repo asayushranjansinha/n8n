@@ -1,5 +1,6 @@
 import {
   useMutation,
+  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
@@ -103,9 +104,9 @@ export const useUpdateCredential = () => {
 };
 
 /**
- * Hook to fetch Credentials by type with Suspense
+ * Hook to fetch Credentials by type
  */
-export const useSuspenseCredentialsByType = (type: CredentialType) => {
+export const useCredentialsByType = (type: CredentialType) => {
   const trpc = useTRPC();
-  return useSuspenseQuery(trpc.credentials.getByType.queryOptions({ type }));
+  return useQuery(trpc.credentials.getByType.queryOptions({ type }));
 };

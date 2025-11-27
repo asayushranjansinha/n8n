@@ -12,10 +12,11 @@ import { GeminiDialog } from "./Dialog";
 
 type GeminiModel = (typeof GEMINI_AVAILABLE_MODELS)[number];
 type GeminiNodeData = {
-  variableName?: string;
   model?: GeminiModel;
+  credentialId?: string;
   userPrompt?: string;
   systemPrompt?: string;
+  variableName?: string;
 };
 
 type GeminiNode = Node<GeminiNodeData>;
@@ -58,12 +59,7 @@ const GeminiNodeComponent = ({ id, data, ...props }: NodeProps<GeminiNode>) => {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         onSubmit={handleSubmit}
-        defaultValues={{
-          model: data.model,
-          systemPrompt: data.systemPrompt,
-          userPrompt: data.userPrompt,
-          variableName: data.variableName,
-        }}
+        defaultValues={data}
       />
 
       <BaseExecutionNode

@@ -6,11 +6,13 @@ import { NonRetriableError } from "inngest";
 import type { NodeExecutor } from "@/features/executions/types";
 import { geminiChannel } from "@/inngest/channels/gemini";
 import { GEMINI_AVAILABLE_MODELS } from "@/features/executions/constants/gemini";
+import prisma from "@/lib/database";
 
 type GeminiModel = (typeof GEMINI_AVAILABLE_MODELS)[number];
 
 export type GeminiData = {
   model: GeminiModel;
+  credentialId: string;
   userPrompt: string;
   systemPrompt?: string;
   variableName: string;
@@ -20,8 +22,8 @@ Handlebars.registerHelper("json", (context) => {
   return new Handlebars.SafeString(JSON.stringify(context, null, 2));
 });
 
-const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY as string;
-const googleAI = createGoogleGenerativeAI({ apiKey: API_KEY });
+// const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY as string;
+// const googleAI = createGoogleGenerativeAI({ apiKey: API_KEY });
 
 export const geminiExecutor: NodeExecutor<GeminiData> = async ({
   data,
@@ -37,23 +39,51 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
   try {
     await publishStatus("loading");
 
-    const variableName = data.variableName;
-    if (!variableName) {
+    // Check for credential id
+    if (!data.credentialId) {
+      await publishStatus("error");
+      throw new NonRetriableError("Gemini Node: GEMINI Credential is missing.");
+    }
+
+    // Check for variable name
+    if (!data.variableName) {
       await publishStatus("error");
       throw new NonRetriableError("Gemini Node: Variable node is missing.");
     }
 
+    // Check for user prompt
     if (!data.userPrompt) {
       await publishStatus("error");
       throw new NonRetriableError("Gemini Node: User prompt is missing.");
     }
 
+    // Compile system prompt
     const system = data.systemPrompt
       ? Handlebars.compile(data.systemPrompt)(context)
       : "You are a helpful assistant";
 
+    // Compile user prompt
     const prompt = Handlebars.compile(data.userPrompt)(context);
 
+    // Fetch credential from database
+    const userCredential = await step.run("gemini-fetch-credential", async () => {
+      return await prisma.credential.findUnique({
+        where: {
+          id: data.credentialId,
+        },
+      });
+    });
+    if (!userCredential) {
+      await publishStatus("error");
+      throw new NonRetriableError(
+        "Gemini Node: Invalid Gemini API Credential."
+      );
+    }
+
+    // Create Google AI instance using user credential
+    const googleAI = createGoogleGenerativeAI({ apiKey: userCredential.value });
+
+    // Generate text
     const result = await step.ai.wrap("gemini-generate-text", generateText, {
       model: googleAI(data.model),
       system,
@@ -81,7 +111,7 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
 
     return {
       ...context,
-      [variableName]: {
+      [data.variableName]: {
         aiResponse: text,
       },
     };

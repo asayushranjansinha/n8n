@@ -66,9 +66,15 @@ export const executionNodes: NodeTypeOption[] = [
   },
   {
     type: NodeType.ANTHROPIC,
-    label: "Antrhopic AI",
+    label: "Anthropic AI",
     description: "Use Anthropic to generate text.",
     icon: "/anthropic.svg",
+  },
+  {
+    type: NodeType.DISCORD,
+    label: "Discord",
+    description: "Send a message on discord.",
+    icon: "/discord.svg",
   },
 ];
 

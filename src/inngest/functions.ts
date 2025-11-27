@@ -14,6 +14,7 @@ import { stripeTriggerChannel } from "./channels/stripe-trigger";
 import { inngest } from "./client";
 import { topologicalSort } from "./utils";
 import { openAiChannel } from "./channels/openai";
+import { discordChannel } from "./channels/discord";
 
 export const executeWorkflow = inngest.createFunction(
   { id: "execute-workflow", retries: 0 },
@@ -26,7 +27,8 @@ export const executeWorkflow = inngest.createFunction(
       stripeTriggerChannel(),
       geminiChannel(),
       anthropicChannel(),
-      openAiChannel()
+      openAiChannel(),
+      discordChannel(),
     ],
   },
   async ({ event, step, publish }) => {

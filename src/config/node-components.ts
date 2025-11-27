@@ -2,13 +2,14 @@ import { NodeType } from "@/generated/prisma/enums";
 import type { NodeTypes } from "@xyflow/react";
 
 import { InitialNode } from "@/components/react-flow/custom/InitialNode";
+import { AnthropicNode } from "@/features/executions/components/anthropic/Node";
+import { DiscordNode } from "@/features/executions/components/discord/Node";
 import { GeminiNode } from "@/features/executions/components/gemini/Node";
 import { HttpRequestNode } from "@/features/executions/components/http-requests/Node";
 import { OpenAiNode } from "@/features/executions/components/openai/Node";
 import { GoogleFormTriggerNode } from "@/features/triggers/components/google-form-trigger/Node";
 import { ManualTriggerNode } from "@/features/triggers/components/manual-trigger/Node";
 import { StripeTriggerNode } from "@/features/triggers/components/stripe-trigger/Node";
-import { AnthropicNode } from "@/features/executions/components/anthropic/Node";
 
 export const nodeComponents = {
   [NodeType.INITIAL]: InitialNode,
@@ -19,6 +20,7 @@ export const nodeComponents = {
   [NodeType.GEMINI]: GeminiNode,
   [NodeType.OPENAI]: OpenAiNode,
   [NodeType.ANTHROPIC]: AnthropicNode,
+  [NodeType.DISCORD]: DiscordNode,
 } as const satisfies NodeTypes;
 
 export type RegisteredNodeType = keyof typeof nodeComponents;

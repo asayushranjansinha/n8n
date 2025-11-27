@@ -151,10 +151,14 @@ enum NodeType {
   ANTHROPIC
   OPENAI
   GEMINI
+  DISCORD
+  SLACK
 }
 
 enum CredentialType {
   OPENAI
   GEMINI
   ANTHROPIC
+  DISCORD
+  SLACK
 }

@@ -7,6 +7,7 @@ import type { NodeExecutor } from "@/features/executions/types";
 import { geminiChannel } from "@/inngest/channels/gemini";
 import { GEMINI_AVAILABLE_MODELS } from "@/features/executions/constants/gemini";
 import prisma from "@/lib/database";
+import { CredentialType } from "@/generated/prisma/enums";
 
 type GeminiModel = (typeof GEMINI_AVAILABLE_MODELS)[number];
 
@@ -21,9 +22,6 @@ export type GeminiData = {
 Handlebars.registerHelper("json", (context) => {
   return new Handlebars.SafeString(JSON.stringify(context, null, 2));
 });
-
-// const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY as string;
-// const googleAI = createGoogleGenerativeAI({ apiKey: API_KEY });
 
 export const geminiExecutor: NodeExecutor<GeminiData> = async ({
   data,
@@ -66,14 +64,17 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
     const prompt = Handlebars.compile(data.userPrompt)(context);
 
     // Fetch credential from database
-    const userCredential = await step.run("gemini-fetch-credential", async () => {
-      return await prisma.credential.findUnique({
-        where: {
-          id: data.credentialId,
-        },
-      });
-    });
-    if (!userCredential) {
+    const userCredential = await step.run(
+      "gemini-fetch-credential",
+      async () => {
+        return await prisma.credential.findUnique({
+          where: {
+            id: data.credentialId,
+          },
+        });
+      }
+    );
+    if (!userCredential || userCredential.type !== CredentialType.GEMINI) {
       await publishStatus("error");
       throw new NonRetriableError(
         "Gemini Node: Invalid Gemini API Credential."

@@ -15,6 +15,7 @@ import { inngest } from "./client";
 import { topologicalSort } from "./utils";
 import { openAiChannel } from "./channels/openai";
 import { discordChannel } from "./channels/discord";
+import { slackChannel } from "./channels/slack";
 
 export const executeWorkflow = inngest.createFunction(
   { id: "execute-workflow", retries: 0 },
@@ -29,6 +30,7 @@ export const executeWorkflow = inngest.createFunction(
       anthropicChannel(),
       openAiChannel(),
       discordChannel(),
+      slackChannel(),
     ],
   },
   async ({ event, step, publish }) => {

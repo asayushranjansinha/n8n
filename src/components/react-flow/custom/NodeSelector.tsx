@@ -76,6 +76,12 @@ export const executionNodes: NodeTypeOption[] = [
     description: "Send a message on discord.",
     icon: "/discord.svg",
   },
+  {
+    type: NodeType.SLACK,
+    label: "Slack",
+    description: "Send a message on slack.",
+    icon: "/slack.svg",
+  },
 ];
 
 interface NodeSelectorProps {

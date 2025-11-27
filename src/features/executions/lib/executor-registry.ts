@@ -18,7 +18,14 @@ import {
   type AnthropicData,
   anthropicExecutor,
 } from "@/features/executions/components/anthropic/executor";
-import { type DiscordData, discordExecutor } from "@/features/executions/components/discord/executor";
+import {
+  type DiscordData,
+  discordExecutor,
+} from "@/features/executions/components/discord/executor";
+import {
+  type SlackData,
+  slackExecutor,
+} from "@/features/executions/components/slack/executor";
 
 // Trigger executor imports
 import {
@@ -46,6 +53,7 @@ export type AllowedNodeTypes =
   | typeof NodeType.OPENAI
   | typeof NodeType.ANTHROPIC
   | typeof NodeType.DISCORD
+  | typeof NodeType.SLACK;
 
 /**
  * Maps each node type to its corresponding executor with typed data
@@ -59,6 +67,7 @@ export interface ExecutorMap {
   [NodeType.OPENAI]: NodeExecutor<OpenAiData>;
   [NodeType.ANTHROPIC]: NodeExecutor<AnthropicData>;
   [NodeType.DISCORD]: NodeExecutor<DiscordData>;
+  [NodeType.SLACK]: NodeExecutor<SlackData>;
 }
 
 /**
@@ -73,6 +82,7 @@ export const executorRegistry: ExecutorMap = {
   [NodeType.OPENAI]: openAiExecutor,
   [NodeType.ANTHROPIC]: anthropicExecutor,
   [NodeType.DISCORD]: discordExecutor,
+  [NodeType.SLACK]: slackExecutor,
 } as const;
 
 /**

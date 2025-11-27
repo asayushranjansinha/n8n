@@ -9,16 +9,17 @@ datasource db {
 }
 
 model User {
-  id            String     @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String
   email         String
-  emailVerified Boolean    @default(false)
+  emailVerified Boolean      @default(false)
   image         String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @default(now()) @updatedAt
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @default(now()) @updatedAt
   sessions      Session[]
   accounts      Account[]
   workflows     Workflow[]
+  credentials   Credential[]
 
   @@unique([email])
   @@map("user")
@@ -69,6 +70,22 @@ model Verification {
   @@map("verification")
 }
 
+model Credential {
+  id    String         @id @default(cuid())
+  name  String
+  value String
+  type  CredentialType
+
+  // Relations
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nodes  Node[]
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Workflow {
   id   String @id @default(cuid())
   name String
@@ -88,6 +105,9 @@ model Node {
 
   workflowId String
   workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  credentialId String?
+  credential   Credential? @relation(fields: [credentialId], references: [id])
 
   name     String
   type     NodeType
@@ -131,4 +151,10 @@ enum NodeType {
   ANTHROPIC
   OPENAI
   GEMINI
+}
+
+enum CredentialType {
+  OPENAI
+  GEMINI
+  ANTHROPIC
 }

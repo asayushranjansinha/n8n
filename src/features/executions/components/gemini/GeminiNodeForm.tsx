@@ -86,7 +86,7 @@ export const GeminiNodeForm = ({
         },
       });
     }
-  }, [isLoadingCredentials, credentials]);
+  }, [isLoadingCredentials, credentials, router]);
 
   return (
     <Form {...form}>

@@ -8,6 +8,7 @@ import { anthropicChannel } from "@/inngest/channels/anthropic";
 import { ANTHROPIC_AVAILABLE_MODELS } from "@/features/executions/constants/anthropic";
 import prisma from "@/lib/database";
 import { CredentialType } from "@/generated/prisma/enums";
+import { decrypt } from "@/lib/encryption";
 
 type AnthropicModel = (typeof ANTHROPIC_AVAILABLE_MODELS)[number];
 
@@ -73,8 +74,11 @@ export const anthropicExecutor: NodeExecutor<AnthropicData> = async ({
       throw new NonRetriableError("Anthropic Node: Invalid API Credential.");
     }
 
+    // Decrypt credential
+    const decryptedCredential = decrypt(userCredential.value);
+
     // Create Anthropic instance using user credential
-    const anthropic = createAnthropic({ apiKey: userCredential.value });
+    const anthropic = createAnthropic({ apiKey: decryptedCredential });
 
     // Generate text
     const result = await step.ai.wrap("anthropic-generate-text", generateText, {

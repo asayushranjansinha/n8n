@@ -8,6 +8,7 @@ import { openAiChannel } from "@/inngest/channels/openai";
 import { OPENAI_AVAILABLE_MODELS } from "@/features/executions/constants/openai";
 import prisma from "@/lib/database";
 import { CredentialType } from "@/generated/prisma/enums";
+import { decrypt } from "@/lib/encryption";
 
 type OpenAIModel = (typeof OPENAI_AVAILABLE_MODELS)[number];
 
@@ -75,8 +76,11 @@ export const openAiExecutor: NodeExecutor<OpenAiData> = async ({
       );
     }
 
+    // Decrypt credential
+    const decryptedCredential = decrypt(userCredential.value);
+
     // Create OpenAI instance using user credential
-    const openAI = createOpenAI({ apiKey: userCredential.value });
+    const openAI = createOpenAI({ apiKey: decryptedCredential });
 
     // Generate text
     const result = await step.ai.wrap("openai-generate-text", generateText, {

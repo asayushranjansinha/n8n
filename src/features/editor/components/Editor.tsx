@@ -17,7 +17,8 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useSetAtom } from "jotai";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTheme } from "next-themes";
 
 import { NodeType } from "@/generated/prisma/enums";
 
@@ -32,6 +33,8 @@ import { editorAtom } from "../store/atoms";
 
 export const Editor = ({ workflowId }: { workflowId: string }) => {
   const { data: workflow } = useSuspenseWorkflow(workflowId);
+
+  const { resolvedTheme } = useTheme();
 
   const setEditor = useSetAtom(editorAtom);
 
@@ -58,9 +61,11 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
     return nodes.some((node) => node.type === NodeType.MANUAL_TRIGGER);
   }, [nodes]);
 
+  
   return (
     <div className="h-full w-full">
       <ReactFlow
+        colorMode={resolvedTheme === 'dark' ? 'dark' : 'light'}
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}

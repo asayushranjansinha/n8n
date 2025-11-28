@@ -13,47 +13,32 @@ interface StatProps {
   icon: React.ReactNode;
 }
 
-export interface ActionProps {
-  text: string;
-  onClick: () => void;
-  variant?: React.ComponentProps<typeof Button>["variant"];
-  className?: string;
-}
-
 interface HeroSectionProps {
   title: React.ReactNode;
   subtitle: string;
-  actions: ActionProps[];
+  primaryButton: { label: string; href: string };
+  secondaryButton: { label: string; href: string };
   stats: StatProps[];
   images: string[];
   className?: string;
 }
 
-// Animation variants for Framer Motion
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-    },
-  },
-} as const;
-
-
 export const HeroSection = ({
   title,
   subtitle,
-  actions,
+  primaryButton,
+  secondaryButton,
   stats,
   images,
   className,
 }: HeroSectionProps) => {
-  const {itemVariants, imageVariants, floatingVariants} = HeroSectionAnimationVariants;
+  const { itemVariants, imageVariants, floatingVariants, containerVariants } =
+    HeroSectionAnimationVariants;
+
   return (
     <section
       className={cn(
-        "w-full overflow-hidden bg-background py-12 sm:py-24",
+        "w-full overflow-hidden bg-background py-12 sm:py-16 px-4 sm:px-6 lg:px-8",
         className
       )}
     >
@@ -77,22 +62,20 @@ export const HeroSection = ({
           >
             {subtitle}
           </motion.p>
+
+          {/* Hardcoded Buttons */}
           <motion.div
             className="mt-8 flex flex-wrap justify-center gap-4 lg:justify-start"
             variants={itemVariants}
           >
-            {actions.map((action, index) => (
-              <Button
-                key={index}
-                onClick={action.onClick}
-                variant={action.variant}
-                size="lg"
-                className={action.className}
-              >
-                {action.text}
-              </Button>
-            ))}
+            <Button asChild variant="default" size="lg">
+              <a href={primaryButton.href}>{primaryButton.label}</a>
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <a href={secondaryButton.href}>{secondaryButton.label}</a>
+            </Button>
           </motion.div>
+
           <motion.div
             className="mt-12 flex flex-wrap justify-center gap-8 lg:justify-start"
             variants={itemVariants}

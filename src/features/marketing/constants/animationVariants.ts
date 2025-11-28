@@ -31,4 +31,15 @@ export const HeroSectionAnimationVariants = {
       },
     },
   } as const,
+
+  // Animation variants for Framer Motion
+  containerVariants: {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  } as const
 };

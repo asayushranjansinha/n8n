@@ -4,6 +4,10 @@ import { PillBanner } from "@/components/ui/banner";
 import { FaqsSection } from "@/features/marketing/components/FaqsSection";
 import { HeroSection } from "@/features/marketing/components/HeroSection";
 import { TestimonialSection } from "@/features/marketing/components/TestimonialsSection";
+import { Header } from "@/features/marketing/components/Header";
+import { FooterSection } from "@/features/marketing/components/Footer";
+import { FeaturesSection } from "@/features/marketing/components/FeaturesSection";
+import { IntegrationsSection } from "@/features/marketing/components/IntegrationsSection";
 
 const heroData = {
   title: (
@@ -46,17 +50,21 @@ const heroData = {
 };
 function MarketingPage() {
   return (
-    <>
+    <div className="relative min-h-screen">
+      <Header />
       <div className="relative w-full h-24 sm:h-32 flex items-center justify-center">
-      <PillBanner
-        buttonText="Upgrade to n8n Pro"
-        description="Get higher automation limits and faster workflow executions"
-      />
-    </div>
+        <PillBanner
+          buttonText="Upgrade to n8n Pro"
+          description="Get higher automation limits and faster workflow executions"
+        />
+      </div>
       <HeroSection {...heroData} />
+      <FeaturesSection />
       <FaqsSection />
+      <IntegrationsSection />
       <TestimonialSection />
-    </>
+      <FooterSection />
+    </div>
   );
 }
 

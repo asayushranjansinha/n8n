@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { HeroSectionAnimationVariants } from "../constants/animationVariants";
+import Link from "next/link";
 
 interface StatProps {
   value: string;
@@ -69,10 +70,10 @@ export const HeroSection = ({
             variants={itemVariants}
           >
             <Button asChild variant="default" size="lg">
-              <a href={primaryButton.href}>{primaryButton.label}</a>
+              <Link href={primaryButton.href}>{primaryButton.label}</Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <a href={secondaryButton.href}>{secondaryButton.label}</a>
+              <Link href={secondaryButton.href}>{secondaryButton.label}</Link>
             </Button>
           </motion.div>
 

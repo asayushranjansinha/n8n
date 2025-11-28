@@ -7,13 +7,13 @@ import { Button } from "@/components/ui/button";
 type EntityHeaderProps = {
   title: string;
   description?: string;
-  newButtonLabel: string;
+  newButtonLabel?: string;
   disabled?: boolean;
   isCreating?: boolean;
 } & (
   | { onNew: () => void; newButtonHref?: never }
   | { newButtonHref: string; onNew?: never }
-  | { newButtonHref: never; onNew?: never }
+  | { newButtonHref?: never; onNew?: never }
 );
 
 export const EntityHeader: FC<EntityHeaderProps> = ({
@@ -35,7 +35,7 @@ export const EntityHeader: FC<EntityHeaderProps> = ({
           </p>
         )}
       </div>
-      {onNew && !newButtonHref && (
+      {onNew && !newButtonHref && newButtonLabel && (
         <Button disabled={disabled || isCreating} onClick={onNew} size="sm">
           <PlusIcon className="size-4" />
           {newButtonLabel}

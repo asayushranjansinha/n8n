@@ -52,12 +52,12 @@ const heroData = {
 function MarketingPage() {
   return (
     <div className="relative min-h-screen">
-      <Header />
-      <HeroSection {...heroData} />
       <PillBanner
         buttonText="Upgrade to n8n Pro"
         description="Get higher automation limits and faster workflow executions"
       />
+      <Header />
+      <HeroSection {...heroData} />
       <FeaturesSection />
       <IntegrationsSection />
       <TestimonialSection />

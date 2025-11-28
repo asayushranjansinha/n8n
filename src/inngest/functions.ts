@@ -21,7 +21,7 @@ import { ExecutionStatus } from "@/generated/prisma/enums";
 export const executeWorkflow = inngest.createFunction(
   {
     id: "execute-workflow",
-    retries: 0,
+    retries: process.env.NODE_ENV === "development" ? 0 : undefined,
 
     onFailure: async ({ event, step, error }) => {
       return prisma.execution.update({

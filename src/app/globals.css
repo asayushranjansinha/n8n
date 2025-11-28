@@ -204,5 +204,5 @@
  * Sonner description color fix
  */
 [data-description] {
-  color: var(--text-secondary-foreground) !important;
+  color: var(--secondary-foreground) !important;
 }

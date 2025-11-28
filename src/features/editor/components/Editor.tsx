@@ -32,10 +32,9 @@ import { ExecuteWorkflowButton } from "./ExecuteWorkflowButton";
 import { editorAtom } from "../store/atoms";
 
 export const Editor = ({ workflowId }: { workflowId: string }) => {
-  const [isMounted, setIsMounted] = useState(false);
   const { data: workflow } = useSuspenseWorkflow(workflowId);
 
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
 
   const setEditor = useSetAtom(editorAtom);
 
@@ -62,17 +61,11 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
     return nodes.some((node) => node.type === NodeType.MANUAL_TRIGGER);
   }, [nodes]);
 
-
-  // use effect to let component mount for theme
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-  if(!isMounted) return null;
   
   return (
     <div className="h-full w-full">
       <ReactFlow
-        colorMode={theme === 'dark' ? 'dark' : 'light'}
+        colorMode={resolvedTheme === 'dark' ? 'dark' : 'light'}
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}

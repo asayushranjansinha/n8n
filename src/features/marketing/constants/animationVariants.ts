@@ -1,3 +1,4 @@
+import { Variants, easeOut } from "framer-motion";
 
 export const HeroSectionAnimationVariants = {
   itemVariants: {
@@ -41,5 +42,25 @@ export const HeroSectionAnimationVariants = {
         staggerChildren: 0.2,
       },
     },
-  } as const
+  } as const,
+};
+export const bannerAnimationVariants: Variants = {
+  hidden: { x: 0, y: 0, opacity: 0, rotate: 0 },
+  visible: (custom: { x: number; y: number }) => ({
+    x: custom.x,
+    y: custom.y,
+    opacity: 1,
+    rotate: 360,
+    transition: {
+      x: { duration: 0.3, ease: easeOut },
+      y: { duration: 0.3, ease: easeOut },
+      opacity: { duration: 0.3 },
+      rotate: {
+        duration: 1,
+        type: "spring",
+        stiffness: 100,
+        damping: 10,
+      },
+    },
+  }),
 };

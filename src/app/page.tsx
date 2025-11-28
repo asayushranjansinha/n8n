@@ -1,5 +1,6 @@
 import { BriefcaseIcon, LinkIcon, UsersIcon } from "lucide-react";
 
+import { PillBanner } from "@/components/ui/banner";
 import { FaqsSection } from "@/features/marketing/components/FaqsSection";
 import { HeroSection } from "@/features/marketing/components/HeroSection";
 import { TestimonialSection } from "@/features/marketing/components/TestimonialsSection";
@@ -46,6 +47,12 @@ const heroData = {
 function MarketingPage() {
   return (
     <>
+      <div className="relative w-full h-24 sm:h-32 flex items-center justify-center">
+      <PillBanner
+        buttonText="Upgrade to n8n Pro"
+        description="Get higher automation limits and faster workflow executions"
+      />
+    </div>
       <HeroSection {...heroData} />
       <FaqsSection />
       <TestimonialSection />

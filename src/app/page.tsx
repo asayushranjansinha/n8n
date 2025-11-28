@@ -2,6 +2,7 @@ import { BriefcaseIcon, LinkIcon, UsersIcon } from "lucide-react";
 
 import { FaqsSection } from "@/features/marketing/components/FaqsSection";
 import { HeroSection } from "@/features/marketing/components/HeroSection";
+import { TestimonialSection } from "@/features/marketing/components/TestimonialsSection";
 
 const heroData = {
   title: (
@@ -47,6 +48,7 @@ function MarketingPage() {
     <>
       <HeroSection {...heroData} />
       <FaqsSection />
+      <TestimonialSection />
     </>
   );
 }

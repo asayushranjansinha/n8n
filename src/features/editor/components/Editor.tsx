@@ -17,7 +17,8 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useSetAtom } from "jotai";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTheme } from "next-themes";
 
 import { NodeType } from "@/generated/prisma/enums";
 
@@ -31,7 +32,10 @@ import { ExecuteWorkflowButton } from "./ExecuteWorkflowButton";
 import { editorAtom } from "../store/atoms";
 
 export const Editor = ({ workflowId }: { workflowId: string }) => {
+  const [isMounted, setIsMounted] = useState(false);
   const { data: workflow } = useSuspenseWorkflow(workflowId);
+
+  const { theme } = useTheme();
 
   const setEditor = useSetAtom(editorAtom);
 
@@ -58,9 +62,17 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
     return nodes.some((node) => node.type === NodeType.MANUAL_TRIGGER);
   }, [nodes]);
 
+
+  // use effect to let component mount for theme
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  if(!isMounted) return null;
+  
   return (
     <div className="h-full w-full">
       <ReactFlow
+        colorMode={theme === 'dark' ? 'dark' : 'light'}
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}

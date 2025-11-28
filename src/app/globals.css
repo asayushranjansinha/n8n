@@ -198,3 +198,11 @@
     letter-spacing: var(--tracking-normal);
   }
 }
+
+
+/**
+ * Sonner description color fix
+ */
+[data-description] {
+  color: var(--text-secondary-foreground) !important;
+}

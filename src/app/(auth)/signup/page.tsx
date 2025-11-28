@@ -1,6 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+
 import {
   Card,
   CardContent,
@@ -10,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { EmailPasswordSignupForm } from "@/features/auth/components/EmailPasswordSignupForm";
-import { OAuthSignupOptions } from "@/features/auth/components/OAuthSignupOptions";
+import { OAuthLoginOptions } from "@/features/auth/components/OAuthLoginOptions";
 
 function SignupPage() {
   return (
@@ -34,7 +33,7 @@ function SignupPage() {
             <div className="bg-border h-px flex-1" />
           </div>
 
-          <OAuthSignupOptions />
+          <OAuthLoginOptions />
         </div>
       </CardContent>
       <CardFooter>

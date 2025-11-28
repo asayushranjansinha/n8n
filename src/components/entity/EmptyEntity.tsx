@@ -12,7 +12,7 @@ import {
 interface EmptyEntityProps {
   title: string;
   message: string;
-  onNew: () => void;
+  onNew?: () => void;
 }
 
 export const EmptyEntity = ({ title, message, onNew }: EmptyEntityProps) => {
@@ -26,7 +26,7 @@ export const EmptyEntity = ({ title, message, onNew }: EmptyEntityProps) => {
         <EmptyDescription>{message}</EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        <Button onClick={onNew}>Create New</Button>
+        {onNew && <Button onClick={onNew}>Create New</Button>}
       </EmptyContent>
     </Empty>
   );

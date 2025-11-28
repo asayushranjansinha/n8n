@@ -12,7 +12,7 @@ export default async function Layout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="overflow-x-hidden">
         <div className="bg-accent/20 flex-1 flex flex-col">{children}</div>
       </SidebarInset>
     </SidebarProvider>

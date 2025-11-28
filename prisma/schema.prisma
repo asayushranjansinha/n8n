@@ -95,6 +95,7 @@ model Workflow {
 
   nodes       Node[]
   connections Connection[]
+  executions  Execution[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -142,6 +143,24 @@ model Connection {
   @@unique([toNodeId, fromNodeId, fromOutput, toInput])
 }
 
+model Execution {
+  id String @id @default(cuid())
+
+  inngestEventId String          @unique
+  output         Json?
+  status         ExecutionStatus @default(RUNNING)
+  error          String?         @db.Text
+  errorStack     String?         @db.Text
+
+  // Relations
+  workflowId String
+  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  // Timestamps
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+}
+
 enum NodeType {
   INITIAL
   MANUAL_TRIGGER
@@ -159,4 +178,10 @@ enum CredentialType {
   OPENAI
   GEMINI
   ANTHROPIC
+}
+
+enum ExecutionStatus {
+  RUNNING
+  COMPLETED
+  FAILED
 }

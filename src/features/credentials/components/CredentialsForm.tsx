@@ -109,7 +109,7 @@ export const CredentialsForm = ({
           handleError(error);
         },
         onSuccess(data) {
-          router.push(`/credentials/${data.id}`);
+          router.back()
         },
       });
     }

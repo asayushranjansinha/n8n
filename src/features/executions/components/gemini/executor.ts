@@ -8,6 +8,7 @@ import { geminiChannel } from "@/inngest/channels/gemini";
 import { GEMINI_AVAILABLE_MODELS } from "@/features/executions/constants/gemini";
 import prisma from "@/lib/database";
 import { CredentialType } from "@/generated/prisma/enums";
+import { decrypt } from "@/lib/encryption";
 
 type GeminiModel = (typeof GEMINI_AVAILABLE_MODELS)[number];
 
@@ -83,8 +84,11 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
       );
     }
 
+    // Decrypt credential 
+    const decryptedCredential = decrypt(userCredential.value);
+
     // Create Google AI instance using user credential
-    const googleAI = createGoogleGenerativeAI({ apiKey: userCredential.value });
+    const googleAI = createGoogleGenerativeAI({ apiKey: decryptedCredential });
 
     // Generate text
     const result = await step.ai.wrap("gemini-generate-text", generateText, {

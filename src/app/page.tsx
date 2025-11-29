@@ -9,6 +9,7 @@ import { FooterSection } from "@/features/marketing/components/Footer";
 import { FeaturesSection } from "@/features/marketing/components/FeaturesSection";
 import { IntegrationsSection } from "@/features/marketing/components/IntegrationsSection";
 import { CallToActionSection } from "@/features/marketing/components/CallToActionSection";
+import { PricingSection } from "@/features/marketing/components/PricingSection";
 
 const heroData = {
   title: (
@@ -63,6 +64,7 @@ function MarketingPage() {
       <FeaturesSection />
       <IntegrationsSection />
       <TestimonialSection />
+      <PricingSection />
       <FaqsSection />
       <CallToActionSection />
       <FooterSection

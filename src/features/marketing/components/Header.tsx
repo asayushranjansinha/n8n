@@ -18,7 +18,7 @@ export function Header() {
     },
     {
       label: "Pricing",
-      href: "#",
+      href: "/#pricing",
     },
     {
       label: "About",

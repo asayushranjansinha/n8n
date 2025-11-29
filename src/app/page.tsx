@@ -53,17 +53,22 @@ function MarketingPage() {
   return (
     <div className="relative min-h-screen">
       <Header />
+      <div className="mt-[70px]">
+        <PillBanner
+          buttonText="Upgrade to n8n Pro"
+          description="Get higher automation limits and faster workflow executions"
+        />
+      </div>
       <HeroSection {...heroData} />
-      <PillBanner
-        buttonText="Upgrade to n8n Pro"
-        description="Get higher automation limits and faster workflow executions"
-      />
       <FeaturesSection />
       <IntegrationsSection />
       <TestimonialSection />
       <FaqsSection />
       <CallToActionSection />
-      <FooterSection />
+      <FooterSection
+        copyright={`© ${new Date().getFullYear()} Ayush Ranjan Sinha. All Rights Reserved.`}
+        description="Workflow automation platform that connects apps, APIs, and AI to automate anything without code."
+      />
     </div>
   );
 }

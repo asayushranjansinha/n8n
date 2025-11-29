@@ -42,7 +42,7 @@ export function PillBanner({
   const [isHovered, setIsHovered] = React.useState(false);
 
   return (
-    <div className={cn("mx-auto flex items-center justify-center", className)}>
+    <div className={cn("mx-auto flex items-center justify-center relative", className)}>
       <AnimatePresence>
         <motion.div
           className="relative"

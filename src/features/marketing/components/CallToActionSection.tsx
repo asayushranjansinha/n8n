@@ -3,7 +3,8 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-const integrations = [
+
+const defaultIntegrations = [
   "/youtube.svg",
   "/googleform.svg",
   "/http.svg",
@@ -18,25 +19,41 @@ const integrations = [
   "/openai.svg",
 ];
 
-export function CallToActionSection() {
+interface CallToActionSectionProps {
+  badgeText?: string;
+  heading?: string;
+  description?: string;
+  primaryCtaText?: string;
+  primaryCtaHref?: string;
+  secondaryCtaText?: string;
+  secondaryCtaHref?: string;
+  integrations?: string[];
+}
+
+export function CallToActionSection({
+  badgeText = "Automations",
+  heading = "Plug Anything. Automate Everything.",
+  description = "No limits. No hand-holding. Build once, automate forever.",
+  primaryCtaText = "Start Building",
+  primaryCtaHref = "/workflows",
+  secondaryCtaText = "See All Integrations →",
+  secondaryCtaHref = "/integrations",
+  integrations = defaultIntegrations,
+}: CallToActionSectionProps) {
   return (
     <section className="container mx-auto py-12 sm:py-16 px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-10 items-center">
       <div>
         <p className="uppercase text-sm font-semibold text-muted-foreground">
-          Automations
+          {badgeText}
         </p>
-        <h2 className="text-7xl font-bold mt-2 mb-4">
-          Plug Anything. Automate Everything.
-        </h2>
-        <p className="text-foreground/70 mb-6">
-          No ceilings. No babysitting. Your stack, fully automated.
-        </p>
+        <h2 className="text-7xl font-bold mt-2 mb-4">{heading}</h2>
+        <p className="text-foreground/70 mb-6">{description}</p>
         <div className="flex gap-4">
-          <Button>
-            <Link href="/workflows">Start Building</Link>
+          <Button asChild>
+            <Link href={primaryCtaHref}>{primaryCtaText}</Link>
           </Button>
-          <Button variant="outline">
-            <Link href="/integrations">See All Integrations →</Link>
+          <Button asChild variant="outline">
+            <Link href={secondaryCtaHref}>{secondaryCtaText}</Link>
           </Button>
         </div>
       </div>

@@ -223,7 +223,7 @@
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/yourusername/n8n.git
+   git clone https://github.com/asayushranjansinha/n8n.git
    cd n8n
    ```
 

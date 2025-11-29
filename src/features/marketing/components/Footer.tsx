@@ -65,9 +65,9 @@ const defaultLegalLinks = [
 
 export const FooterSection = ({
   sections = defaultSections,
-  description = "A collection of components for your startup business or side project.",
+  description,
   socialLinks = defaultSocialLinks,
-  copyright = "© 2024 Shadcnblocks.com. All rights reserved.",
+  copyright,
   legalLinks = defaultLegalLinks,
 }: FooterProps) => {
   return (

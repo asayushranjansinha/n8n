@@ -1,3 +1,6 @@
+"use client";
+import { motion } from "framer-motion";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -14,84 +17,84 @@ const testimonials: Testimonial[] = [
     role: "Software Engineer",
     image: "https://randomuser.me/api/portraits/men/1.jpg",
     quote:
-      "Tailus is really extraordinary and very practical, no need to break your head. A real gold mine.",
+      "This automation platform just works. No circus. No guesswork. After years of building pipelines, finally a tool that doesn't waste my time.",
   },
   {
     name: "Yves Kalume",
-    role: "GDE - Android",
+    role: "Automation Developer",
     image: "https://randomuser.me/api/portraits/men/6.jpg",
     quote:
-      "With no experience in webdesign I just redesigned my entire website in a few minutes with tailwindcss thanks to Tailus.",
+      "Hooked it with GitHub, Stripe, and OpenAI in one afternoon. The type safety feels illegal. Never going back to duct-taped automations.",
   },
   {
     name: "Yucel Faruksahan",
-    role: "Tailkits Creator",
+    role: "Workflow Architect",
     image: "https://randomuser.me/api/portraits/men/7.jpg",
     quote:
-      "Great work on tailfolio template. This is one of the best personal website that I have seen so far :)",
-  },
-  {
-    name: "Anonymous author",
-    role: "Doing something",
-    image: "https://randomuser.me/api/portraits/men/8.jpg",
-    quote:
-      "I am really new to Tailwind and I want to give a go to make some page on my own. I searched a lot of hero pages and blocks online. However, most of them are not giving me a clear view or needed some HTML/CSS coding background to make some changes from the original or too expensive to have. I downloaded the one of Tailus template which is very clear to understand at the start and you could modify the codes/blocks to fit perfectly on your purpose of the page.",
+      "Real-time execution logs saved me during a production meltdown. I saw the failure, replayed it, fixed it. Done. No drama.",
   },
   {
     name: "Shekinah Tshiokufila",
-    role: "Senior Software Engineer",
+    role: "Senior Backend Engineer",
     image: "https://randomuser.me/api/portraits/men/4.jpg",
     quote:
-      "Tailus is redefining the standard of web design, with these blocks it provides an easy and efficient way for those who love beauty but may lack the time to implement it. I can only recommend this incredible wonder.",
+      "The multi-AI node support is the killer feature. GPT, Claude, Gemini — it's not a gimmick, it's a superpower.",
   },
   {
     name: "Oketa Fred",
     role: "Fullstack Developer",
     image: "https://randomuser.me/api/portraits/men/2.jpg",
     quote:
-      "I absolutely love Tailus! The component blocks are beautifully designed and easy to use, which makes creating a great-looking website a breeze.",
+      "Workflows don't just run, they report back live. That's the difference between a prototype and real engineering.",
   },
   {
     name: "Zeki",
-    role: "Founder of ChatExtend",
+    role: "Founder @ChatExtend",
     image: "https://randomuser.me/api/portraits/men/5.jpg",
     quote:
-      "Using TailsUI has been like unlocking a secret design superpower. It's the perfect fusion of simplicity and versatility, enabling us to create UIs that are as stunning as they are user-friendly.",
+      "We monetized automations without building billing from scratch. Stripe + Polar integration isn't a feature, it's the product.",
   },
   {
     name: "Joseph Kitheka",
-    role: "Fullstack Developer",
+    role: "Systems Engineer",
     image: "https://randomuser.me/api/portraits/men/9.jpg",
     quote:
-      "Tailus has transformed the way I develop web applications. Their extensive collection of UI components, blocks, and templates has significantly accelerated my workflow. The flexibility to customize every aspect allows me to create unique user experiences. Tailus is a game-changer for modern web development!",
+      "Execution history, retries, and encryption that actually makes sense. This is engineer-first automation, period.",
   },
   {
     name: "Khatab Wedaa",
-    role: "MerakiUI Creator",
+    role: "Full-Stack Automation Dev",
     image: "https://randomuser.me/api/portraits/men/10.jpg",
     quote:
-      "Tailus is an elegant, clean, and responsive tailwind css components it's very helpful to start fast with your project.",
+      "Dockerized everything, shipped to Vercel, migrations deployed — it's boring the good kind of boring. Predictable.",
   },
   {
     name: "Rodrigo Aguilar",
-    role: "TailwindAwesome Creator",
+    role: "Creator @TailwindAwesome",
     image: "https://randomuser.me/api/portraits/men/11.jpg",
     quote:
-      "I love Tailus ❤️. The component blocks are well-structured, simple to use, and beautifully designed. It makes it really easy to have a good-looking website in no time.",
+      "AI streaming inside workflows changed how we build user experiences. This is what modern automation should've been years ago.",
   },
   {
     name: "Eric Ampire",
-    role: "Mobile Engineer at @BRPNews • @GoogleDevExpert for Android",
+    role: "Google Dev Expert – Android & Cloud",
     image: "https://randomuser.me/api/portraits/men/12.jpg",
     quote:
-      "Tailus templates are the perfect solution for anyone who wants to create a beautiful and functional website without any web design experience. The templates are easy to use, customizable, and responsive, and the support team is always available to help. I highly recommend Tailus templates to anyone who is looking to create a website.",
+      "Anyone can automate. But not everyone can automate securely, scalably, and with live failure recovery. This one does.",
   },
   {
-    name: "Roland Tubonge",
-    role: "Software Engineer",
+    name: "Eric Tubonge",
+    role: "Platform Engineer",
     image: "https://randomuser.me/api/portraits/men/13.jpg",
     quote:
-      "Tailus is so well designed that even with a very poor knowledge of web design you can do miracles. Let yourself be seduced!",
+      "Finally a workflow engine that speaks TypeScript, encryption, and reliability. Everything else feels prehistoric now.",
+  },
+  {
+    name: "Aisha Rahman",
+    role: "DevOps Engineer",
+    image: "https://randomuser.me/api/portraits/women/14.jpg",
+    quote:
+      "Setting up workflows that used to take hours now takes minutes. The type-safe APIs and real-time monitoring are a lifesaver for our team.",
   },
 ];
 
@@ -113,54 +116,75 @@ const testimonialChunks = chunkArray(
 
 export function TestimonialSection() {
   return (
-    <section>
-      <div className="space-y-7 py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto w-full max-w-5xl ">
-          <div className="space-y-2 text-center">
-            <h2 className="text-3xl font-bold md:text-4xl">
-              Loved by the Community
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Discover what our users are saying about their experiences with
-              us. Their stories highlight the impact and value we bring.
-            </p>
-          </div>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2 md:mt-12 lg:grid-cols-3">
-            {testimonialChunks.map((chunk, chunkIndex) => (
-              <div key={chunkIndex} className="space-y-3">
-                {chunk.map(({ name, role, quote, image }, index) => (
-                  <Card key={index}>
-                    <CardContent className="grid grid-cols-[auto_1fr] gap-3 pt-6">
-                      <Avatar className="size-9">
-                        <AvatarImage
-                          alt={name}
-                          src={image}
-                          loading="lazy"
-                          width="120"
-                          height="120"
-                        />
-                        <AvatarFallback>ST</AvatarFallback>
-                      </Avatar>
+    <section id="testimonials" className="scroll-mt-24">
+      <div className="space-y-7 py-12 sm:py-16 px-4 sm:px-6 lg:px-8 mx-auto w-full max-w-5xl ">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.5 }}
+          className="space-y-2 text-center"
+        >
+          <h2 className="text-3xl font-bold md:text-4xl">
+            Loved by the Community
+          </h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Discover what our users are saying about their experiences with us.
+            Their stories highlight the impact and value we bring.
+          </p>
+        </motion.div>
 
-                      <div>
-                        <h3 className="font-medium">{name}</h3>
+        {/* Body */}
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {testimonialChunks.map((chunk, chunkIndex) => (
+            <div key={chunkIndex} className="space-y-3">
+              {chunk.map(({ name, role, quote, image }, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 20 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <Card className="p-0">
+                    <CardContent className="grid gap-5 p-5">
+                      {/* Top row → Avatar + basic info */}
+                      <div className="flex items-center gap-4">
+                        <Avatar className="size-12">
+                          <AvatarImage
+                            alt={name}
+                            src={image}
+                            loading="lazy"
+                            width="120"
+                            height="120"
+                            className="object-cover"
+                          />
+                          <AvatarFallback className="text-lg font-semibold">
+                            {name.slice(0, 2)}
+                          </AvatarFallback>
+                        </Avatar>
 
-                        <span className="text-muted-foreground block text-sm tracking-wide">
-                          {role}
-                        </span>
-
-                        <blockquote className="mt-3">
-                          <p className="text-gray-700 dark:text-gray-300">
-                            {quote}
+                        <div>
+                          <h3 className="text-base font-semibold leading-tight">
+                            {name}
+                          </h3>
+                          <p className="text-xs font-medium uppercase text-primary mt-1 tracking-wide">
+                            {role}
                           </p>
-                        </blockquote>
+                        </div>
                       </div>
+
+                      {/* Quote section below */}
+                      <blockquote className="border-l-2 pl-3 text-muted-foreground text-sm italic">
+                        {quote}
+                      </blockquote>
                     </CardContent>
                   </Card>
-                ))}
-              </div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
     </section>

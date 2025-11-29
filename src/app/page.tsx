@@ -1,15 +1,15 @@
 import { BriefcaseIcon, LinkIcon, UsersIcon } from "lucide-react";
 
 import { PillBanner } from "@/components/ui/banner";
-import { FaqsSection } from "@/features/marketing/components/FaqsSection";
-import { HeroSection } from "@/features/marketing/components/HeroSection";
-import { TestimonialSection } from "@/features/marketing/components/TestimonialsSection";
-import { Header } from "@/features/marketing/components/Header";
-import { FooterSection } from "@/features/marketing/components/Footer";
-import { FeaturesSection } from "@/features/marketing/components/FeaturesSection";
-import { IntegrationsSection } from "@/features/marketing/components/IntegrationsSection";
 import { CallToActionSection } from "@/features/marketing/components/CallToActionSection";
+import { FaqsSection } from "@/features/marketing/components/FaqsSection";
+import { FeaturesSection } from "@/features/marketing/components/FeaturesSection";
+import { FooterSection } from "@/features/marketing/components/Footer";
+import { Header } from "@/features/marketing/components/Header";
+import { HeroSection } from "@/features/marketing/components/HeroSection";
+import { IntegrationsSection } from "@/features/marketing/components/IntegrationsSection";
 import { PricingSection } from "@/features/marketing/components/PricingSection";
+import { TestimonialSection } from "@/features/marketing/components/TestimonialsSection";
 
 const heroData = {
   title: (

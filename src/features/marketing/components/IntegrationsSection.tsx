@@ -1,5 +1,5 @@
 "use client";
-
+import { motion } from "framer-motion";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 interface Integration {
@@ -28,7 +28,41 @@ interface SpiralConfig {
   sizeMax: number;
   background: string;
 }
-
+const integrations: Integration[] = [
+  {
+    title: "Slack",
+    blurb: "Connect your workflows to Slack for real-time notifications.",
+    meta: "Messaging",
+  },
+  {
+    title: "Discord",
+    blurb: "Automate messages, channels, and notifications on Discord.",
+    meta: "Messaging",
+  },
+  {
+    title: "Google Forms",
+    blurb: "Collect and process form responses automatically.",
+    meta: "Forms",
+  },
+  {
+    title: "Stripe",
+    blurb:
+      "Handle payments, subscriptions, and financial workflows seamlessly.",
+    meta: "Payments",
+  },
+  {
+    title: "OpenAI",
+    blurb: "Leverage AI capabilities for content generation and analysis.",
+    meta: "AI",
+  },
+];
+const spans = [
+  "md:col-span-4 md:row-span-2",
+  "md:col-span-2 md:row-span-1",
+  "md:col-span-2 md:row-span-1",
+  "md:col-span-3 md:row-span-1",
+  "md:col-span-3 md:row-span-1",
+];
 const IntegrationsSection: React.FC = () => {
   const spiralRef = useRef<HTMLDivElement>(null);
 
@@ -166,45 +200,11 @@ const IntegrationsSection: React.FC = () => {
     }));
   };
 
-  const integrations: Integration[] = [
-    {
-      title: "Slack",
-      blurb: "Connect your workflows to Slack for real-time notifications.",
-      meta: "Messaging",
-    },
-    {
-      title: "Discord",
-      blurb: "Automate messages, channels, and notifications on Discord.",
-      meta: "Messaging",
-    },
-    {
-      title: "Google Forms",
-      blurb: "Collect and process form responses automatically.",
-      meta: "Forms",
-    },
-    {
-      title: "Stripe",
-      blurb:
-        "Handle payments, subscriptions, and financial workflows seamlessly.",
-      meta: "Payments",
-    },
-    {
-      title: "OpenAI",
-      blurb: "Leverage AI capabilities for content generation and analysis.",
-      meta: "AI",
-    },
-  ];
-
-  const spans = [
-    "md:col-span-4 md:row-span-2",
-    "md:col-span-2 md:row-span-1",
-    "md:col-span-2 md:row-span-1",
-    "md:col-span-3 md:row-span-1",
-    "md:col-span-3 md:row-span-1",
-  ];
-
   return (
-    <section className="relative mx-auto w-full max-w-5xl py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
+    <section
+      id="integrations"
+      className="relative mx-auto w-full max-w-5xl py-12 sm:py-16 px-4 sm:px-6 lg:px-8"
+    >
       <div
         className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-30 mask-[radial-gradient(circle_at_center,rgba(255,255,255,1),rgba(255,255,255,0.1)_60%,transparent_75%)]"
         style={{ mixBlendMode: "screen" }}
@@ -212,14 +212,26 @@ const IntegrationsSection: React.FC = () => {
         <div ref={spiralRef} />
       </div>
 
-      <div className="space-y-2 text-center mb-7">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+        className="space-y-2 text-center mb-7"
+      >
         <h2 className="text-3xl font-bold md:text-4xl">Integrations</h2>
         <p className="text-muted-foreground max-w-2xl mx-auto">
           Seamlessly connect your tools with n8n.
         </p>
-      </div>
+      </motion.div>
 
-      <div className="relative grid grid-cols-1 gap-3 md:grid-cols-6 auto-rows-[minmax(120px,auto)]">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.5, delay: 0.7 }}
+        className="relative grid grid-cols-1 gap-3 md:grid-cols-6 auto-rows-[minmax(120px,auto)]"
+      >
         {integrations.map((i, idx) => (
           <BentoCard
             key={idx}
@@ -229,7 +241,7 @@ const IntegrationsSection: React.FC = () => {
             meta={i.meta}
           />
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 };

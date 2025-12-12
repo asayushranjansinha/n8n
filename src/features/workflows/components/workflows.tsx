@@ -12,7 +12,7 @@ import { EntityPagination } from "@/components/entity/EntityPagination";
 import { EntitySearch } from "@/components/entity/EntitySearch";
 import { ErrorView } from "@/components/entity/ErrorView";
 import { LoadingView } from "@/components/entity/LoadingView";
-import type { Workflow } from "@/generated/prisma/client";
+import type { Workflow } from "@/generated/prisma";
 import { useEntitySearch } from "@/hooks/useEntitySearch";
 import { useUpgradeModal } from "@/hooks/useUpgradeModal";
 import { useWorkflowSearchParams } from "../hooks/useWorkflowSearchParams";

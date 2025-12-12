@@ -7,7 +7,7 @@ import type { NodeExecutor } from "@/features/executions/types";
 import { openAiChannel } from "@/inngest/channels/openai";
 import { OPENAI_AVAILABLE_MODELS } from "@/features/executions/constants/openai";
 import prisma from "@/lib/database";
-import { CredentialType } from "@/generated/prisma/enums";
+import { CredentialType } from "@/generated/prisma";
 import { decrypt } from "@/lib/encryption";
 
 type OpenAIModel = (typeof OPENAI_AVAILABLE_MODELS)[number];

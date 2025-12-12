@@ -16,7 +16,7 @@ import { topologicalSort } from "./utils";
 import { openAiChannel } from "./channels/openai";
 import { discordChannel } from "./channels/discord";
 import { slackChannel } from "./channels/slack";
-import { ExecutionStatus } from "@/generated/prisma/enums";
+import { ExecutionStatus } from "@/generated/prisma";
 
 export const executeWorkflow = inngest.createFunction(
   {

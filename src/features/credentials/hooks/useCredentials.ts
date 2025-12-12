@@ -7,7 +7,7 @@ import {
 import { toast } from "sonner";
 import { useTRPC } from "@/trpc/client";
 
-import { CredentialType } from "@/generated/prisma/enums";
+import { CredentialType } from "@/generated/prisma";
 import { useCredentialsSearchParams } from "./useCredentialSearchParams";
 
 /**

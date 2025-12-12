@@ -7,7 +7,7 @@ import type { NodeExecutor } from "@/features/executions/types";
 import { anthropicChannel } from "@/inngest/channels/anthropic";
 import { ANTHROPIC_AVAILABLE_MODELS } from "@/features/executions/constants/anthropic";
 import prisma from "@/lib/database";
-import { CredentialType } from "@/generated/prisma/enums";
+import { CredentialType } from "@/generated/prisma";
 import { decrypt } from "@/lib/encryption";
 
 type AnthropicModel = (typeof ANTHROPIC_AVAILABLE_MODELS)[number];

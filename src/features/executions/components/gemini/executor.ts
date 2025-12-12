@@ -7,7 +7,7 @@ import type { NodeExecutor } from "@/features/executions/types";
 import { geminiChannel } from "@/inngest/channels/gemini";
 import { GEMINI_AVAILABLE_MODELS } from "@/features/executions/constants/gemini";
 import prisma from "@/lib/database";
-import { CredentialType } from "@/generated/prisma/enums";
+import { CredentialType } from "@/generated/prisma";
 import { decrypt } from "@/lib/encryption";
 
 type GeminiModel = (typeof GEMINI_AVAILABLE_MODELS)[number];
@@ -84,7 +84,7 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
       );
     }
 
-    // Decrypt credential 
+    // Decrypt credential
     const decryptedCredential = decrypt(userCredential.value);
 
     // Create Google AI instance using user credential

@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 
 import { formatDistanceToNow } from "date-fns";
 
-import type { Credential } from "@/generated/prisma/client";
-import { CredentialType } from "@/generated/prisma/enums";
+import type { Credential } from "@/generated/prisma";
+import { CredentialType } from "@/generated/prisma";
 
 import {
   useRemoveCredential,

@@ -19,8 +19,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useSuspenseExecution } from "@/features/executions/hooks/useExecutions";
-import { Execution } from "@/generated/prisma/client";
-import { ExecutionStatus } from "@/generated/prisma/enums";
+import { Execution } from "@/generated/prisma";
+import { ExecutionStatus } from "@/generated/prisma";
 import { cn } from "@/lib/utils";
 
 const statusConfig = {

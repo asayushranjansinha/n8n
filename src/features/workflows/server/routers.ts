@@ -3,7 +3,7 @@ import * as z from "zod";
 
 import { PAGINATION } from "@/config/constants";
 
-import { NodeType } from "@/generated/prisma/enums";
+import { NodeType } from "@/generated/prisma";
 import { sendWorkflowExecution } from "@/inngest/utils";
 import prisma from "@/lib/database";
 import { generateWorkflowName } from "@/lib/random-name-util";

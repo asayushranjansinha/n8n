@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
-import { CredentialType } from "@/generated/prisma/enums";
+import { CredentialType } from "@/generated/prisma";
 
 import { Button } from "@/components/ui/button";
 
@@ -106,7 +106,11 @@ export const AnthropicNodeForm = ({
                 Step 1: Save response as...
               </FormLabel>
               <FormControl>
-                <Input {...field} placeholder="e.g. aiContent" className="text-sm" />
+                <Input
+                  {...field}
+                  placeholder="e.g. aiContent"
+                  className="text-sm"
+                />
               </FormControl>
               <FormDescription className="text-xs mt-2">
                 Access the AI output in later steps using:
@@ -162,7 +166,11 @@ export const AnthropicNodeForm = ({
                 <Select
                   onValueChange={field.onChange}
                   value={field.value}
-                  disabled={isLoadingCredentials || !credentials || credentials.length === 0}
+                  disabled={
+                    isLoadingCredentials ||
+                    !credentials ||
+                    credentials.length === 0
+                  }
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select API Key" />
@@ -173,7 +181,10 @@ export const AnthropicNodeForm = ({
                         <div className="flex gap-2.5 text-sm items-baseline justify-between">
                           <span className="font-medium">{credential.name}</span>
                           <span className="text-xs text-muted-foreground">
-                            Created {formatDistanceToNow(credential.createdAt, { addSuffix: true })}
+                            Created{" "}
+                            {formatDistanceToNow(credential.createdAt, {
+                              addSuffix: true,
+                            })}
                           </span>
                         </div>
                       </SelectItem>

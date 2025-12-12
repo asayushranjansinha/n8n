@@ -1,7 +1,7 @@
 "use client";
 
-import { Credential } from "@/generated/prisma/client";
-import { CredentialType } from "@/generated/prisma/enums";
+import { Credential } from "@/generated/prisma";
+import { CredentialType } from "@/generated/prisma";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -109,7 +109,7 @@ export const CredentialsForm = ({
           handleError(error);
         },
         onSuccess(data) {
-          router.back()
+          router.back();
         },
       });
     }

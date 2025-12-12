@@ -1,7 +1,7 @@
 import toposort from "toposort";
 import { createId } from "@paralleldrive/cuid2";
 
-import { Connection, Node } from "@/generated/prisma/client";
+import { Connection, Node } from "@/generated/prisma";
 
 import { inngest } from "./client";
 

@@ -1,4 +1,4 @@
-import { checkout, polar, portal } from "@polar-sh/better-auth";
+import { checkout, polar, portal, usage } from "@polar-sh/better-auth";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 
@@ -30,15 +30,27 @@ export const auth = betterAuth({
       use: [
         checkout({
           products: [
+            // COMMUNITY PLAN (Free/Non-checkout, but included for completeness if needed)
             {
-              productId: process.env.POLAR_PRODUCT_ID as string,
+              productId: process.env.NEXT_PUBLIC_POLAR_COMMUNITY as string,
+              slug: "community",
+            },
+            // PRO PLAN (Required for the pricing section)
+            {
+              productId: process.env.NEXT_PUBLIC_POLAR_PRO as string,
               slug: "pro",
+            },
+            // ENTERPRISE PLAN (Required for the pricing section)
+            {
+              productId: process.env.NEXT_PUBLIC_POLAR_ENTERPRISE as string,
+              slug: "enterprise",
             },
           ],
           successUrl: process.env.POLAR_SUCCESS_URL,
           authenticatedUsersOnly: true,
         }),
         portal(),
+        usage(),
       ],
     }),
   ],

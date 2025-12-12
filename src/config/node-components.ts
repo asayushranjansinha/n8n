@@ -1,4 +1,4 @@
-import { NodeType } from "@/generated/prisma/enums";
+import { NodeType } from "@/generated/prisma";
 import type { NodeTypes } from "@xyflow/react";
 
 import { InitialNode } from "@/components/react-flow/custom/InitialNode";

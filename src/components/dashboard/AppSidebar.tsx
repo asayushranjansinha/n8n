@@ -60,6 +60,33 @@ export const AppSidebar = () => {
   const pathname = usePathname();
   const { hasActiveSubscription, isLoading } = useHasActiveSubscription();
 
+  // New function to handle navigation to the Polar Customer Portal
+  const handleOpenBillingPortal = async () => {
+    const toastId = toast.loading("Loading billing portal...");
+    
+    try {
+        const { data, error } = await authClient.customer.portal();
+
+        if (error || !data?.url) {
+            toast.error("Failed to open billing portal.", {
+                description: error?.message || "Portal link could not be generated.",
+                id: toastId,
+            });
+            return;
+        }
+
+        // Redirect user to the Polar Customer Portal link
+        window.location.href = data.url;
+        toast.dismiss(toastId);
+
+    } catch (error) {
+        console.error("Billing Portal error:", error);
+        toast.error("An unexpected error occurred.", {
+            id: toastId,
+        });
+    }
+  };
+
   const footerItems = useMemo(() => {
     const items: FooterItem[] = [];
 
@@ -76,11 +103,11 @@ export const AppSidebar = () => {
       });
     }
 
-    // Billing Portal
+    // Billing Portal - UPDATED onClick
     items.push({
       title: "Billing portal",
       icon: CreditCardIcon,
-      onClick: () => {},
+      onClick: handleOpenBillingPortal, // Use the new handler
     });
 
     // Logout
@@ -111,7 +138,7 @@ export const AppSidebar = () => {
         items,
       },
     ];
-  }, [isLoading, hasActiveSubscription]);
+  }, [isLoading, hasActiveSubscription]); // Added handleOpenBillingPortal to dependencies
 
   return (
     <Sidebar collapsible="icon">

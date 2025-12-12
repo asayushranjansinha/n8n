@@ -20,7 +20,7 @@ import { useSetAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTheme } from "next-themes";
 
-import { NodeType } from "@/generated/prisma/enums";
+import { NodeType } from "@/generated/prisma";
 
 import { ErrorView } from "@/components/entity/ErrorView";
 import { LoadingView } from "@/components/entity/LoadingView";
@@ -61,11 +61,10 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
     return nodes.some((node) => node.type === NodeType.MANUAL_TRIGGER);
   }, [nodes]);
 
-  
   return (
     <div className="h-full w-full">
       <ReactFlow
-        colorMode={resolvedTheme === 'dark' ? 'dark' : 'light'}
+        colorMode={resolvedTheme === "dark" ? "dark" : "light"}
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}

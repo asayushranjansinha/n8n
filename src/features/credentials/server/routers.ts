@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-import { CredentialType } from "@/generated/prisma/enums";
+import { CredentialType } from "@/generated/prisma";
 import { PAGINATION } from "@/config/constants";
 
 import prisma from "@/lib/database";

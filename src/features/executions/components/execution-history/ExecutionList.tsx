@@ -2,8 +2,8 @@
 
 import { formatDistanceToNow } from "date-fns";
 
-import type { Execution } from "@/generated/prisma/client";
-import { ExecutionStatus } from "@/generated/prisma/enums";
+import type { Execution } from "@/generated/prisma";
+import { ExecutionStatus } from "@/generated/prisma";
 
 import { EmptyEntity } from "@/components/entity/EmptyEntity";
 import { EntityItem } from "@/components/entity/EntityItem";
@@ -53,7 +53,7 @@ export const ExecutionItem = ({
   const duration = data.completedAt
     ? Math.round((data.completedAt.getTime() - data.startedAt.getTime()) / 1000)
     : "Not Completed";
-    
+
   const subtitle = (
     <>
       {data.workflow.name}

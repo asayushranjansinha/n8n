@@ -1,5 +1,5 @@
 import type { NodeExecutor } from "@/features/executions/types";
-import { NodeType } from "@/generated/prisma/enums";
+import { NodeType } from "@/generated/prisma";
 
 // Execution executor imports
 import {
